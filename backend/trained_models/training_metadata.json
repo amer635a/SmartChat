@@ -1,0 +1,9 @@
+{
+  "num_scenarios": 3,
+  "num_phrases": 71668,
+  "labels": [
+    "export_limit",
+    "user_account_status",
+    "what_is_soc_of_battery"
+  ]
+}

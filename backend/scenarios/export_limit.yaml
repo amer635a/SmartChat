@@ -1,0 +1,42 @@
+id: export_limit
+name: Export Limit
+description: Check or modify the export limit for the current site.
+
+training_phrases:
+  - "what is the export limit"
+  - "show export limit"
+  - "export limit of the site"
+  - "how many records can I export"
+  - "check export limit"
+  - "current export limit"
+  - "what is the export cap"
+  - "show me the export restriction"
+
+steps:
+  - action: run_script
+    script: get_export_limit.py
+    display_message: "The current export limit is:"
+
+  - action: ask_choice
+    question: "Would you like to change the export limit?"
+    options:
+      - label: "Yes"
+        value: "yes"
+      - label: "No"
+        value: "no"
+    branches:
+      "yes":
+        - action: ask_input
+          question: "What should the new export limit be?"
+          input_key: new_limit
+          validation: integer
+
+        - action: run_script
+          script: set_export_limit.py
+          args:
+            new_limit: "$input.new_limit"
+          display_message: "Export limit has been updated:"
+
+      "no":
+        - action: end
+          message: "Alright, no changes made. Is there anything else I can help with?"

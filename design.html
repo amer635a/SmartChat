@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartChat - System Design</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 50%, #1a1a3e 100%);
+            padding: 50px 40px;
+            text-align: center;
+            border-bottom: 3px solid #6c63ff;
+        }
+        .header h1 { font-size: 3rem; color: #fff; margin-bottom: 10px; letter-spacing: 2px; }
+        .header h1 span { color: #6c63ff; }
+        .header p { font-size: 1.1rem; color: #a0a0c0; max-width: 700px; margin: 0 auto; }
+
+        /* Page Tabs */
+        .page-tabs {
+            display: flex;
+            justify-content: center;
+            background: #0d0d20;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            border-bottom: 2px solid #2a2a4a;
+        }
+        .page-tab {
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #5a5a8a;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-tab:hover { color: #a0a0c0; background: rgba(108,99,255,0.05); }
+        .page-tab.active {
+            color: #fff;
+            border-bottom-color: #6c63ff;
+            background: rgba(108,99,255,0.1);
+        }
+        .page-tab .tab-num {
+            background: #2a2a4a;
+            color: #8080b0;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .page-tab.active .tab-num {
+            background: #6c63ff;
+            color: #fff;
+        }
+
+        /* Page Content */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Sub Navigation */
+        .sub-nav {
+            background: #12122a;
+            padding: 12px 40px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .sub-nav a {
+            color: #6a6a9a;
+            text-decoration: none;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .sub-nav a:hover { background: #6c63ff; color: #fff; }
+
+        /* Sections */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 40px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: #6c63ff;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .section-title .num {
+            background: #6c63ff;
+            color: #fff;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .section-subtitle {
+            color: #8080b0;
+            font-size: 1rem;
+            margin-bottom: 35px;
+            padding-left: 55px;
+        }
+        .divider { border: none; border-top: 1px solid #2a2a4a; margin: 0; }
+
+        /* Page Header Banner */
+        .page-banner {
+            background: linear-gradient(135deg, #12122a 0%, #1a1a3e 100%);
+            padding: 40px;
+            text-align: center;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .page-banner h2 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .page-banner .icon { font-size: 3rem; margin-bottom: 15px; }
+        .page-banner p { color: #8080b0; max-width: 600px; margin: 0 auto; }
+
+        /* Overview Boxes */
+        .overview-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        .overview-box {
+            background: #1a1a3e;
+            border: 2px solid #3a3a6e;
+            border-radius: 14px;
+            padding: 25px;
+            text-align: center;
+            min-width: 170px;
+            transition: all 0.3s;
+        }
+        .overview-box:hover {
+            border-color: #6c63ff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(108,99,255,0.2);
+        }
+        .overview-box .icon { font-size: 2.2rem; margin-bottom: 8px; }
+        .overview-box h3 { color: #fff; margin-bottom: 4px; font-size: 0.95rem; }
+        .overview-box p { color: #8080b0; font-size: 0.8rem; }
+        .arrow { font-size: 1.8rem; color: #6c63ff; }
+
+        /* Flow Chart */
+        .flow-container {
+            background: #12122a;
+            border-radius: 14px;
+            padding: 35px;
+            margin: 25px 0;
+            border: 1px solid #2a2a4a;
+        }
+        .flow-title {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .flow-steps {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        .flow-step {
+            background: #1a1a3e;
+            border: 2px solid #3a3a6e;
+            border-radius: 12px;
+            padding: 18px 28px;
+            min-width: 320px;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+        .flow-step.action { border-color: #6c63ff; background: linear-gradient(135deg, #1a1a3e, #2a1a5e); }
+        .flow-step.decision {
+            border-color: #ff9f43;
+            background: linear-gradient(135deg, #1a1a3e, #3a2a1e);
+        }
+        .flow-step.decision::before {
+            content: "?";
+            position: absolute; top: -10px; right: -10px;
+            background: #ff9f43; color: #1a1a3e;
+            width: 24px; height: 24px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 0.9rem;
+        }
+        .flow-step.end { border-color: #2ed573; background: linear-gradient(135deg, #1a1a3e, #1a3a2e); }
+        .flow-step.start { border-color: #45aaf2; background: linear-gradient(135deg, #1a1a3e, #1a2a4e); }
+        .flow-step h4 { color: #fff; margin-bottom: 4px; font-size: 0.95rem; }
+        .flow-step p { color: #a0a0c0; font-size: 0.82rem; }
+        .flow-arrow { color: #6c63ff; font-size: 1.4rem; padding: 4px 0; }
+
+        .flow-branch {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .flow-branch-arm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        .branch-label {
+            color: #ff9f43;
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 4px 14px;
+            background: rgba(255,159,67,0.1);
+            border-radius: 16px;
+            margin-bottom: 4px;
+        }
+
+        /* Grid Cards */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 25px 0;
+        }
+        .arch-card {
+            background: #12122a;
+            border: 1px solid #2a2a4a;
+            border-radius: 14px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+        .arch-card:hover { border-color: #6c63ff; }
+        .arch-card.full-width { grid-column: 1 / -1; }
+        .arch-card h3 { color: #6c63ff; margin-bottom: 12px; font-size: 1.05rem; }
+        .arch-card ul { list-style: none; padding: 0; }
+        .arch-card li {
+            padding: 7px 0;
+            border-bottom: 1px solid #1a1a3e;
+            color: #c0c0e0;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .arch-card li:last-child { border-bottom: none; }
+        .arch-card li .bullet { color: #6c63ff; font-weight: bold; flex-shrink: 0; }
+
+        /* Step numbers */
+        .step-num {
+            background: #6c63ff;
+            color: #fff;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0d0d20;
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 22px;
+            margin: 18px 0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.83rem;
+            overflow-x: auto;
+            position: relative;
+        }
+        .code-block .lang-label {
+            position: absolute; top: 8px; right: 12px;
+            color: #6c63ff; font-size: 0.72rem;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .code-block pre { color: #c0c0e0; white-space: pre; line-height: 1.7; }
+        .code-key { color: #ff9f43; }
+        .code-val { color: #2ed573; }
+        .code-comment { color: #5a5a8a; }
+        .code-str { color: #45aaf2; }
+
+        /* Pipeline */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            padding: 25px;
+            background: #12122a;
+            border-radius: 14px;
+            border: 1px solid #2a2a4a;
+        }
+        .pipeline-step { text-align: center; min-width: 130px; }
+        .pipeline-step .pipe-box {
+            background: #1a1a3e;
+            border: 2px solid #3a3a6e;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 6px;
+        }
+        .pipeline-step .pipe-box h4 { color: #fff; font-size: 0.82rem; }
+        .pipeline-step p { color: #8080b0; font-size: 0.72rem; }
+        .pipe-arrow { color: #6c63ff; font-size: 1.4rem; }
+
+        /* Chat Mockup */
+        .chat-mockup {
+            max-width: 500px;
+            margin: 25px auto;
+            background: #12122a;
+            border-radius: 14px;
+            border: 1px solid #2a2a4a;
+            overflow: hidden;
+        }
+        .chat-header-mock {
+            background: #1a1a3e;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .chat-header-mock .dot { width: 10px; height: 10px; border-radius: 50%; background: #2ed573; }
+        .chat-header-mock span { color: #fff; font-weight: bold; }
+        .chat-messages {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 280px;
+        }
+        .msg {
+            max-width: 80%;
+            padding: 11px 16px;
+            border-radius: 14px;
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+        .msg.user { background: #6c63ff; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg.system { background: #1a1a3e; color: #c0c0e0; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #2a2a4a; }
+        .msg.result {
+            background: #1a2a1e; color: #2ed573; align-self: flex-start;
+            border: 1px solid #2a4a2e; border-bottom-left-radius: 4px;
+            font-family: monospace; font-size: 0.82rem;
+        }
+        .quick-btns { display: flex; gap: 8px; align-self: flex-start; }
+        .quick-btn {
+            padding: 7px 18px; border-radius: 18px;
+            border: 2px solid #6c63ff; background: transparent;
+            color: #6c63ff; font-size: 0.82rem; cursor: pointer;
+        }
+        .quick-btn.selected { background: #6c63ff; color: #fff; }
+        .chat-input-mock {
+            display: flex; gap: 10px; padding: 12px 18px;
+            border-top: 1px solid #2a2a4a; background: #1a1a3e;
+        }
+        .chat-input-mock input {
+            flex: 1; background: #12122a; border: 1px solid #2a2a4a;
+            border-radius: 18px; padding: 9px 16px; color: #e0e0e0;
+            font-size: 0.88rem; outline: none;
+        }
+        .chat-input-mock button {
+            background: #6c63ff; border: none; border-radius: 50%;
+            width: 38px; height: 38px; color: #fff; font-size: 1.1rem; cursor: pointer;
+        }
+
+        /* Component Cards */
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin: 25px 0;
+        }
+        .component-card {
+            background: #12122a;
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+        .component-card h4 { color: #fff; margin-bottom: 6px; font-size: 0.9rem; }
+        .component-card p { color: #8080b0; font-size: 0.78rem; }
+        .component-card .tag {
+            display: inline-block;
+            background: rgba(108,99,255,0.2);
+            color: #6c63ff;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.68rem;
+            margin-top: 6px;
+        }
+
+        /* Scenario Builder Mockup */
+        .builder-mockup {
+            background: #12122a;
+            border: 1px solid #2a2a4a;
+            border-radius: 14px;
+            overflow: hidden;
+            max-width: 700px;
+            margin: 25px auto;
+        }
+        .builder-header {
+            background: #1a1a3e;
+            padding: 14px 20px;
+            border-bottom: 1px solid #2a2a4a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .builder-header h4 { color: #fff; font-size: 0.95rem; }
+        .builder-body { padding: 20px; }
+        .builder-field { margin-bottom: 16px; }
+        .builder-field label {
+            display: block;
+            color: #8080b0;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .builder-field .field-input {
+            background: #0d0d20;
+            border: 1px solid #2a2a4a;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #e0e0e0;
+            font-size: 0.88rem;
+            width: 100%;
+        }
+        .builder-field .field-textarea {
+            background: #0d0d20;
+            border: 1px solid #2a2a4a;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #e0e0e0;
+            font-size: 0.85rem;
+            width: 100%;
+            min-height: 80px;
+            font-family: monospace;
+        }
+        .builder-step-item {
+            background: #1a1a3e;
+            border: 1px solid #2a2a4a;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .builder-step-item .step-type {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .type-script { background: rgba(108,99,255,0.2); color: #6c63ff; }
+        .type-choice { background: rgba(255,159,67,0.2); color: #ff9f43; }
+        .type-input { background: rgba(69,170,242,0.2); color: #45aaf2; }
+        .type-end { background: rgba(46,213,115,0.2); color: #2ed573; }
+        .builder-step-item p { color: #c0c0e0; font-size: 0.85rem; flex: 1; }
+        .builder-btn {
+            background: #6c63ff;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .builder-btn.secondary {
+            background: transparent;
+            border: 2px solid #3a3a6e;
+            color: #8080b0;
+        }
+        .builder-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+
+        /* API Table */
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .api-table th {
+            text-align: left;
+            padding: 10px;
+            color: #6c63ff;
+            border-bottom: 2px solid #2a2a4a;
+        }
+        .api-table td {
+            padding: 10px;
+            border-bottom: 1px solid #1a1a3e;
+        }
+        .method-get { color: #2ed573; }
+        .method-post { color: #ff9f43; }
+        .method-ws { color: #45aaf2; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .arch-grid, .component-grid { grid-template-columns: 1fr; }
+            .overview-diagram { flex-direction: column; }
+            .arrow { transform: rotate(90deg); }
+            .flow-branch { flex-direction: column; gap: 10px; }
+            .section { padding: 30px 20px; }
+            .header h1 { font-size: 2rem; }
+            .page-tab { padding: 14px 25px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <h1>Smart<span>Chat</span></h1>
+    <p>Scenario-Driven Support Agent Chat System</p>
+</div>
+
+<!-- Page Tabs -->
+<div class="page-tabs">
+    <div class="page-tab active" onclick="switchPage('page1', this)">
+        <span class="tab-num">1</span>
+        Create a Scenario
+    </div>
+    <div class="page-tab" onclick="switchPage('page2', this)">
+        <span class="tab-num">2</span>
+        Activate the Chat
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 1: CREATE A SCENARIO                                     -->
+<!-- ============================================================ -->
+<div id="page1" class="page active">
+
+    <div class="sub-nav">
+        <a href="#p1-overview">Overview</a>
+        <a href="#p1-yaml">YAML Format</a>
+        <a href="#p1-scripts">Scripts</a>
+        <a href="#p1-augmentation">AI Augmentation</a>
+        <a href="#p1-training">Training</a>
+        <a href="#p1-builder">Scenario Builder</a>
+    </div>
+
+    <div class="page-banner">
+        <div class="icon">&#x1F4CB;</div>
+        <h2>Page 1: Create a Scenario</h2>
+        <p>Define what the chat system can do. Each scenario is a workflow with steps, scripts, and questions. The admin creates scenarios, the system learns from them.</p>
+    </div>
+
+    <!-- P1 - 1. Overview -->
+    <div class="section" id="p1-overview">
+        <div class="section-title">
+            <span class="num">1</span>
+            Scenario Creation Overview
+        </div>
+        <p class="section-subtitle">The complete process to add a new capability to SmartChat</p>
+
+        <div class="overview-diagram">
+            <div class="overview-box">
+                <div class="icon">&#x270D;</div>
+                <h3>Write YAML</h3>
+                <p>Define scenario name,<br>training phrases, steps</p>
+            </div>
+            <span class="arrow">&#x27A1;</span>
+            <div class="overview-box">
+                <div class="icon">&#x1F4DC;</div>
+                <h3>Add Scripts</h3>
+                <p>Write Python scripts<br>for each action</p>
+            </div>
+            <span class="arrow">&#x27A1;</span>
+            <div class="overview-box">
+                <div class="icon">&#x1F916;</div>
+                <h3>AI Augmentation</h3>
+                <p>Claude generates 10,000<br>phrase variations</p>
+            </div>
+            <span class="arrow">&#x27A1;</span>
+            <div class="overview-box">
+                <div class="icon">&#x1F9E0;</div>
+                <h3>Train Model</h3>
+                <p>Neural network learns<br>to recognize intent</p>
+            </div>
+            <span class="arrow">&#x27A1;</span>
+            <div class="overview-box" style="border-color: #2ed573;">
+                <div class="icon">&#x2705;</div>
+                <h3>Ready!</h3>
+                <p>Scenario is live<br>in the chat</p>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P1 - 2. YAML Format -->
+    <div class="section" id="p1-yaml">
+        <div class="section-title">
+            <span class="num">2</span>
+            Scenario YAML Format
+        </div>
+        <p class="section-subtitle">How to define a scenario that the system can execute</p>
+
+        <div class="code-block">
+            <span class="lang-label">YAML</span>
+<pre>
+<span class="code-comment"># scenarios/export_limit.yaml</span>
+
+<span class="code-key">id:</span> <span class="code-val">export_limit</span>
+<span class="code-key">name:</span> <span class="code-val">Export Limit</span>
+<span class="code-key">description:</span> <span class="code-val">Check or modify the site export limit.</span>
+
+<span class="code-key">training_phrases:</span>                          <span class="code-comment"># Seed phrases (5-10 is enough)</span>
+  - <span class="code-str">"what is the export limit"</span>
+  - <span class="code-str">"show export limit"</span>
+  - <span class="code-str">"export limit of the site"</span>
+  - <span class="code-str">"how many records can I export"</span>
+  - <span class="code-str">"check export limit"</span>
+
+<span class="code-key">steps:</span>
+  - <span class="code-key">action:</span> <span class="code-val">run_script</span>                    <span class="code-comment"># Step 1: Run a Python script</span>
+    <span class="code-key">script:</span> <span class="code-val">get_export_limit.py</span>
+    <span class="code-key">display_message:</span> <span class="code-str">"Current export limit:"</span>
+
+  - <span class="code-key">action:</span> <span class="code-val">ask_choice</span>                    <span class="code-comment"># Step 2: Ask a question</span>
+    <span class="code-key">question:</span> <span class="code-str">"Would you like to change it?"</span>
+    <span class="code-key">options:</span>
+      - <span class="code-key">label:</span> <span class="code-str">"Yes"</span>
+        <span class="code-key">value:</span> <span class="code-str">"yes"</span>
+      - <span class="code-key">label:</span> <span class="code-str">"No"</span>
+        <span class="code-key">value:</span> <span class="code-str">"no"</span>
+    <span class="code-key">branches:</span>                                  <span class="code-comment"># Different paths per answer</span>
+      <span class="code-key">yes:</span>
+        - <span class="code-key">action:</span> <span class="code-val">ask_input</span>                <span class="code-comment"># Ask for free-text input</span>
+          <span class="code-key">question:</span> <span class="code-str">"What should the new limit be?"</span>
+          <span class="code-key">input_key:</span> <span class="code-val">new_limit</span>
+
+        - <span class="code-key">action:</span> <span class="code-val">run_script</span>               <span class="code-comment"># Run script with user input</span>
+          <span class="code-key">script:</span> <span class="code-val">set_export_limit.py</span>
+          <span class="code-key">args:</span>
+            <span class="code-key">new_limit:</span> <span class="code-str">"$input.new_limit"</span>    <span class="code-comment"># Variable from ask_input</span>
+          <span class="code-key">display_message:</span> <span class="code-str">"Export limit updated:"</span>
+
+      <span class="code-key">no:</span>
+        - <span class="code-key">action:</span> <span class="code-val">end</span>
+          <span class="code-key">message:</span> <span class="code-str">"No changes made."</span>
+</pre>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Step Types</h3>
+                <ul>
+                    <li><span class="bullet" style="color: #6c63ff;">&#x25CF;</span> <strong>run_script</strong> &mdash; Execute a Python script and show the result</li>
+                    <li><span class="bullet" style="color: #ff9f43;">&#x25CF;</span> <strong>ask_choice</strong> &mdash; Ask Yes/No or multiple choice (with branches)</li>
+                    <li><span class="bullet" style="color: #45aaf2;">&#x25CF;</span> <strong>ask_input</strong> &mdash; Ask for free-text input (store as variable)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x25CF;</span> <strong>end</strong> &mdash; End the scenario with a closing message</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Key Features</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Branching:</strong> ask_choice branches lead to different step sequences</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Variables:</strong> $input.key_name passes user answers to scripts</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Nesting:</strong> Branches can contain more ask_choice steps</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Simple:</strong> Non-developers can read and edit YAML files</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P1 - 3. Scripts -->
+    <div class="section" id="p1-scripts">
+        <div class="section-title">
+            <span class="num">3</span>
+            Python Scripts
+        </div>
+        <p class="section-subtitle">The executable actions that scenarios run</p>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Script Contract</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> Scripts live in <code>backend/scripts/</code></li>
+                    <li><span class="bullet">&#x25B6;</span> Accept args via <code>--args '{"key": "val"}'</code></li>
+                    <li><span class="bullet">&#x25B6;</span> Print result to stdout (text or JSON)</li>
+                    <li><span class="bullet">&#x25B6;</span> Exit 0 = success, non-zero = error</li>
+                    <li><span class="bullet">&#x25B6;</span> 30-second timeout enforced</li>
+                    <li><span class="bullet">&#x25B6;</span> Runs in sandboxed subprocess (isolated)</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Security</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> Only scripts listed in YAML are executable</li>
+                    <li><span class="bullet">&#x25B6;</span> Path traversal blocked (can't escape scripts/)</li>
+                    <li><span class="bullet">&#x25B6;</span> Only .py files allowed</li>
+                    <li><span class="bullet">&#x25B6;</span> Minimal environment (no secrets exposed)</li>
+                    <li><span class="bullet">&#x25B6;</span> shell=False (no shell injection)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Example: get_export_limit.py</h3>
+                <div class="code-block" style="margin: 10px 0 0 0;">
+                    <span class="lang-label">Python</span>
+<pre>
+<span class="code-key">import</span> json
+
+<span class="code-key">def</span> <span class="code-val">main</span>():
+    <span class="code-comment"># Query database or API</span>
+    result = {
+        <span class="code-str">"export_limit"</span>: <span class="code-val">1000</span>,
+        <span class="code-str">"unit"</span>: <span class="code-str">"records"</span>
+    }
+    print(json.dumps(result))
+
+<span class="code-key">if</span> __name__ == <span class="code-str">"__main__"</span>:
+    main()
+</pre>
+                </div>
+            </div>
+            <div class="arch-card">
+                <h3>Example: set_export_limit.py</h3>
+                <div class="code-block" style="margin: 10px 0 0 0;">
+                    <span class="lang-label">Python</span>
+<pre>
+<span class="code-key">import</span> json, argparse
+
+<span class="code-key">def</span> <span class="code-val">main</span>():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(<span class="code-str">"--args"</span>, required=<span class="code-val">True</span>)
+    parsed = parser.parse_args()
+    args = json.loads(parsed.args)
+
+    new_limit = args[<span class="code-str">"new_limit"</span>]
+    <span class="code-comment"># Update database or API</span>
+    result = {
+        <span class="code-str">"status"</span>: <span class="code-str">"success"</span>,
+        <span class="code-str">"new_export_limit"</span>: int(new_limit)
+    }
+    print(json.dumps(result))
+
+<span class="code-key">if</span> __name__ == <span class="code-str">"__main__"</span>:
+    main()
+</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P1 - 4. AI Augmentation -->
+    <div class="section" id="p1-augmentation">
+        <div class="section-title">
+            <span class="num">4</span>
+            AI Data Augmentation (Claude API)
+        </div>
+        <p class="section-subtitle">Turn 5 seed phrases into 10,000 training samples automatically</p>
+
+        <div class="flow-container">
+            <div class="flow-title">Data Augmentation Flow</div>
+            <div class="flow-steps">
+                <div class="flow-step start">
+                    <h4>&#x270D; You Write 5-10 Seed Phrases in YAML</h4>
+                    <p>"what is the export limit", "show export limit", "check export limit"</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action" style="border-color: #ff6b6b; background: linear-gradient(135deg, #1a1a3e, #3a1a2e);">
+                    <h4>&#x1F916; Claude API Generates 10,000 Variations</h4>
+                    <p>"What's the export limit?", "EXPORT LIMIT?", "whats the exprt limit",<br>
+                    "can you show me the export limit please", "export lim?",<br>
+                    "How many items can I export", "eksport limit", "SHOW ME THE EXPORT LIMIT"...</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action">
+                    <h4>&#x1F4BE; Cache Augmented Data Locally</h4>
+                    <p>Save to augmented_data/export_limit.json &mdash; no need to call Claude again</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step end">
+                    <h4>&#x2705; 10,000+ Phrases Ready for Training</h4>
+                    <p>Covers typos, capitalization, slang, formal, casual, questions, commands</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claude Prompt -->
+        <div class="arch-card" style="margin: 20px 0;">
+            <h3>Claude API Augmentation Prompt</h3>
+            <div class="code-block" style="margin: 10px 0 0 0;">
+<pre>
+<span class="code-comment">// Sent to Claude for EACH scenario</span>
+
+<span class="code-str">"""
+You are a training data generator. I have a chatbot scenario called
+"<span class="code-val">{scenario_name}</span>" with these seed phrases:
+
+{seed_phrases}
+
+Generate exactly <span class="code-val">10,000</span> unique variations. Include:
+- Different phrasings (formal, casual, short, long)
+- UPPERCASE, lowercase, Mixed Case, aLL cAPS
+- Common typos and misspellings
+- With and without punctuation
+- Slang and abbreviations
+- Different word orders
+- Questions vs statements
+- With extra words / filler words
+- Multi-language hints (Frenglish, etc.)
+
+Return ONLY the phrases, one per line. No numbering.
+"""</span>
+</pre>
+            </div>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Why Claude Augmentation?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>You write 5</strong> &mdash; Claude generates 10,000 &mdash; massive training data</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Covers typos:</strong> "exprt limit", "eksport lmit"</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Covers caps:</strong> "EXPORT LIMIT", "Export Limit"</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Covers phrasing:</strong> formal, casual, short, verbose</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Cached:</strong> saved to JSON, no repeated API calls</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>How It Works</h3>
+                <ul>
+                    <li><span class="bullet"><span class="step-num">1</span></span> Read seed phrases from YAML</li>
+                    <li><span class="bullet"><span class="step-num">2</span></span> Send to Claude API with augmentation prompt</li>
+                    <li><span class="bullet"><span class="step-num">3</span></span> Parse response (one phrase per line)</li>
+                    <li><span class="bullet"><span class="step-num">4</span></span> Save to augmented_data/{scenario_id}.json</li>
+                    <li><span class="bullet"><span class="step-num">5</span></span> Next time: load from cache (skip API call)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P1 - 5. Training -->
+    <div class="section" id="p1-training">
+        <div class="section-title">
+            <span class="num">5</span>
+            Model Training
+        </div>
+        <p class="section-subtitle">How the neural network learns to recognize intent</p>
+
+        <div class="pipeline">
+            <div class="pipeline-step">
+                <div class="pipe-box">
+                    <h4>10,000+ Phrases</h4>
+                </div>
+                <p>Per scenario from<br>augmentation cache</p>
+            </div>
+            <span class="pipe-arrow">&#x27A1;</span>
+            <div class="pipeline-step">
+                <div class="pipe-box" style="border-color: #45aaf2;">
+                    <h4>SentenceTransformer</h4>
+                </div>
+                <p>Encode each to<br>384-dim vector</p>
+            </div>
+            <span class="pipe-arrow">&#x27A1;</span>
+            <div class="pipeline-step">
+                <div class="pipe-box" style="border-color: #ff9f43;">
+                    <h4>MLPClassifier</h4>
+                </div>
+                <p>ANN (256, 128, 64)<br>hidden layers</p>
+            </div>
+            <span class="pipe-arrow">&#x27A1;</span>
+            <div class="pipeline-step">
+                <div class="pipe-box" style="border-color: #2ed573;">
+                    <h4>Save Model</h4>
+                </div>
+                <p>classifier.joblib<br>label_encoder.joblib</p>
+            </div>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Technical Details</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Embedding:</strong> all-MiniLM-L6-v2 (22MB, CPU-friendly)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Classifier:</strong> MLPClassifier (256, 128, 64), ReLU</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Confidence threshold:</strong> 0.4 minimum</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Training time:</strong> ~30s for 50K+ phrases</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Adding a New Scenario</h3>
+                <ul>
+                    <li><span class="bullet"><span class="step-num">1</span></span> Create YAML in scenarios/</li>
+                    <li><span class="bullet"><span class="step-num">2</span></span> Write Python scripts in scripts/</li>
+                    <li><span class="bullet"><span class="step-num">3</span></span> POST /api/scenarios/reload</li>
+                    <li><span class="bullet"><span class="step-num">4</span></span> POST /api/training/train</li>
+                    <li><span class="bullet"><span class="step-num">5</span></span> Done! Scenario is live</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P1 - 6. Scenario Builder UI -->
+    <div class="section" id="p1-builder">
+        <div class="section-title">
+            <span class="num">6</span>
+            Scenario Builder (UI Preview)
+        </div>
+        <p class="section-subtitle">What the scenario creation interface will look like</p>
+
+        <div class="builder-mockup">
+            <div class="builder-header">
+                <span style="color: #6c63ff; font-size: 1.2rem;">&#x2699;</span>
+                <h4>Create New Scenario</h4>
+            </div>
+            <div class="builder-body">
+                <div class="builder-field">
+                    <label>Scenario Name</label>
+                    <div class="field-input">Export Limit</div>
+                </div>
+                <div class="builder-field">
+                    <label>Description</label>
+                    <div class="field-input">Check or modify the site export limit.</div>
+                </div>
+                <div class="builder-field">
+                    <label>Training Phrases (5-10 seed phrases)</label>
+                    <div class="field-textarea">what is the export limit
+show export limit
+export limit of the site
+how many records can I export
+check export limit</div>
+                </div>
+                <div class="builder-field">
+                    <label>Steps</label>
+                    <div class="builder-step-item">
+                        <span class="step-num">1</span>
+                        <span class="step-type type-script">run_script</span>
+                        <p>get_export_limit.py</p>
+                    </div>
+                    <div class="builder-step-item">
+                        <span class="step-num">2</span>
+                        <span class="step-type type-choice">ask_choice</span>
+                        <p>"Would you like to change it?" &rarr; Yes / No</p>
+                    </div>
+                    <div class="builder-step-item" style="margin-left: 30px; border-color: #ff9f43;">
+                        <span style="color: #ff9f43; font-size: 0.8rem;">YES &rarr;</span>
+                        <span class="step-type type-input">ask_input</span>
+                        <p>"New limit?" &rarr; $input.new_limit</p>
+                    </div>
+                    <div class="builder-step-item" style="margin-left: 30px; border-color: #ff9f43;">
+                        <span style="color: #ff9f43; font-size: 0.8rem;">YES &rarr;</span>
+                        <span class="step-type type-script">run_script</span>
+                        <p>set_export_limit.py --args new_limit</p>
+                    </div>
+                    <div class="builder-step-item" style="margin-left: 30px; border-color: #2ed573;">
+                        <span style="color: #2ed573; font-size: 0.8rem;">NO &rarr;</span>
+                        <span class="step-type type-end">end</span>
+                        <p>"No changes made."</p>
+                    </div>
+                </div>
+                <div class="builder-actions">
+                    <button class="builder-btn secondary">+ Add Step</button>
+                    <button class="builder-btn">Save &amp; Train Model</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 2: ACTIVATE THE CHAT                                     -->
+<!-- ============================================================ -->
+<div id="page2" class="page">
+
+    <div class="sub-nav">
+        <a href="#p2-overview">Overview</a>
+        <a href="#p2-flow">Chat Flow</a>
+        <a href="#p2-nlp">Intent Recognition</a>
+        <a href="#p2-chat-ui">Chat Interface</a>
+        <a href="#p2-api">API &amp; WebSocket</a>
+        <a href="#p2-architecture">Architecture</a>
+    </div>
+
+    <div class="page-banner">
+        <div class="icon">&#x1F4AC;</div>
+        <h2>Page 2: Activate the Chat</h2>
+        <p>The support agent opens the chat, types a sentence, and the system understands it, runs the right scenario, executes scripts, and asks follow-up questions.</p>
+    </div>
+
+    <!-- P2 - 1. Overview -->
+    <div class="section" id="p2-overview">
+        <div class="section-title">
+            <span class="num">1</span>
+            Chat Activation Overview
+        </div>
+        <p class="section-subtitle">What happens when a support agent uses SmartChat</p>
+
+        <div class="overview-diagram">
+            <div class="overview-box">
+                <div class="icon">&#x1F464;</div>
+                <h3>Agent Types</h3>
+                <p>"What is the<br>export limit?"</p>
+            </div>
+            <span class="arrow">&#x27A1;</span>
+            <div class="overview-box">
+                <div class="icon">&#x1F9E0;</div>
+                <h3>NLP Classifies</h3>
+                <p>Intent matched to<br>scenario (92% conf.)</p>
+            </div>
+            <span class="arrow">&#x27A1;</span>
+            <div class="overview-box">
+                <div class="icon">&#x2699;</div>
+                <h3>Flow Engine</h3>
+                <p>Walks scenario steps<br>manages state</p>
+            </div>
+            <span class="arrow">&#x27A1;</span>
+            <div class="overview-box">
+                <div class="icon">&#x1F4DC;</div>
+                <h3>Run Script</h3>
+                <p>Execute Python<br>show result</p>
+            </div>
+            <span class="arrow">&#x27A1;</span>
+            <div class="overview-box">
+                <div class="icon">&#x2753;</div>
+                <h3>Ask Next</h3>
+                <p>Follow-up question<br>branch on answer</p>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P2 - 2. Complete Chat Flow -->
+    <div class="section" id="p2-flow">
+        <div class="section-title">
+            <span class="num">2</span>
+            Complete Chat Flow
+        </div>
+        <p class="section-subtitle">Step-by-step: from user message to scenario completion</p>
+
+        <div class="flow-container">
+            <div class="flow-title">Message Processing Flow</div>
+            <div class="flow-steps">
+                <div class="flow-step start">
+                    <h4>&#x1F464; Agent Types a Message</h4>
+                    <p>"What is the export limit of the site?"</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+
+                <div class="flow-step action" style="border-color: #45aaf2;">
+                    <h4>&#x1F9E0; NLP Intent Classification</h4>
+                    <p>Encode sentence &rarr; 384-dim vector &rarr; MLPClassifier &rarr; "export_limit" (confidence: 0.92)</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+
+                <div class="flow-step decision">
+                    <h4>Confidence Check</h4>
+                    <p>Is confidence &gt; 0.4 threshold?</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+
+                <div class="flow-branch">
+                    <div class="flow-branch-arm">
+                        <span class="branch-label">&#x2705; Yes &mdash; Match Found</span>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step action">
+                            <h4>&#x2699; Activate Scenario</h4>
+                            <p>Load "Export Limit" scenario from registry<br>Create session, begin step execution</p>
+                        </div>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step action">
+                            <h4>&#x1F4DC; Step 1: Run Script</h4>
+                            <p>Execute get_export_limit.py<br>Display: { "export_limit": 1000, "unit": "records" }</p>
+                        </div>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step decision">
+                            <h4>Step 2: Ask Choice</h4>
+                            <p>"Would you like to change it?" &mdash; [Yes] [No]</p>
+                        </div>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-branch">
+                            <div class="flow-branch-arm">
+                                <span class="branch-label">Yes</span>
+                                <div class="flow-arrow">&#x2B07;</div>
+                                <div class="flow-step action" style="border-color: #45aaf2;">
+                                    <h4>Step 3a: Ask Input</h4>
+                                    <p>"What should the new limit be?"</p>
+                                </div>
+                                <div class="flow-arrow">&#x2B07;</div>
+                                <div class="flow-step action">
+                                    <h4>Step 3b: Run Update Script</h4>
+                                    <p>set_export_limit.py(new_limit=5000)<br>Display: { "status": "success" }</p>
+                                </div>
+                                <div class="flow-arrow">&#x2B07;</div>
+                                <div class="flow-step end">
+                                    <h4>&#x2705; Scenario Complete</h4>
+                                    <p>"Limit updated! Anything else?"</p>
+                                </div>
+                            </div>
+                            <div class="flow-branch-arm">
+                                <span class="branch-label">No</span>
+                                <div class="flow-arrow">&#x2B07;</div>
+                                <div class="flow-step end">
+                                    <h4>&#x2705; Scenario Complete</h4>
+                                    <p>"No changes made."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flow-branch-arm">
+                        <span class="branch-label">&#x274C; No Match</span>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step end" style="border-color: #ff6b6b;">
+                            <h4>Fallback</h4>
+                            <p>"I didn't understand. Could you rephrase?"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P2 - 3. NLP Inference -->
+    <div class="section" id="p2-nlp">
+        <div class="section-title">
+            <span class="num">3</span>
+            Intent Recognition (Runtime)
+        </div>
+        <p class="section-subtitle">How the system understands each user message in real-time</p>
+
+        <div class="pipeline">
+            <div class="pipeline-step">
+                <div class="pipe-box">
+                    <h4>User Text</h4>
+                </div>
+                <p>"What is the<br>export limit?"</p>
+            </div>
+            <span class="pipe-arrow">&#x27A1;</span>
+            <div class="pipeline-step">
+                <div class="pipe-box" style="border-color: #45aaf2;">
+                    <h4>Encode</h4>
+                </div>
+                <p>SentenceTransformer<br>&rarr; 384-dim vector</p>
+            </div>
+            <span class="pipe-arrow">&#x27A1;</span>
+            <div class="pipeline-step">
+                <div class="pipe-box" style="border-color: #ff9f43;">
+                    <h4>Predict</h4>
+                </div>
+                <p>MLPClassifier outputs<br>probability per scenario</p>
+            </div>
+            <span class="pipe-arrow">&#x27A1;</span>
+            <div class="pipeline-step">
+                <div class="pipe-box" style="border-color: #2ed573;">
+                    <h4>Result</h4>
+                </div>
+                <p>"export_limit"<br>confidence: 0.92</p>
+            </div>
+        </div>
+
+        <div class="arch-card" style="margin-top: 15px;">
+            <h3>Session State Machine</h3>
+            <ul>
+                <li><span class="bullet" style="color: #45aaf2;">&#x25CF;</span> <strong>IDLE</strong> &mdash; Waiting for user input, no active scenario. NLP classifies next message.</li>
+                <li><span class="bullet" style="color: #ff9f43;">&#x25CF;</span> <strong>AWAITING_CHOICE</strong> &mdash; Asked a Yes/No question, waiting for user to pick an option.</li>
+                <li><span class="bullet" style="color: #6c63ff;">&#x25CF;</span> <strong>AWAITING_INPUT</strong> &mdash; Asked for free-text input (e.g., "new limit value?").</li>
+                <li><span class="bullet" style="color: #2ed573;">&#x25CF;</span> <strong>EXECUTING</strong> &mdash; Running a script, will send result when done.</li>
+            </ul>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P2 - 4. Chat Interface -->
+    <div class="section" id="p2-chat-ui">
+        <div class="section-title">
+            <span class="num">4</span>
+            Chat Interface
+        </div>
+        <p class="section-subtitle">What the support agent sees and interacts with</p>
+
+        <div class="chat-mockup">
+            <div class="chat-header-mock">
+                <div class="dot"></div>
+                <span>SmartChat</span>
+                <span style="color: #8080b0; font-size: 0.8rem; margin-left: auto;">Connected</span>
+            </div>
+            <div class="chat-messages">
+                <div class="msg system">Welcome! How can I help you today?</div>
+                <div class="msg user">What is the export limit of the site?</div>
+                <div class="msg system">Starting scenario: <strong>Export Limit</strong></div>
+                <div class="msg result">{ "export_limit": 1000, "unit": "records" }</div>
+                <div class="msg system">The current export limit is shown above.<br>Would you like to change it?</div>
+                <div class="quick-btns">
+                    <button class="quick-btn selected">Yes</button>
+                    <button class="quick-btn">No</button>
+                </div>
+                <div class="msg system">What should the new export limit be?</div>
+                <div class="msg user">5000</div>
+                <div class="msg result">{ "status": "success", "new_export_limit": 5000 }</div>
+                <div class="msg system">Export limit updated! Is there anything else?</div>
+            </div>
+            <div class="chat-input-mock">
+                <input type="text" placeholder="Type your message..." disabled>
+                <button>&#x27A4;</button>
+            </div>
+        </div>
+
+        <div class="component-grid" style="margin-top: 25px;">
+            <div class="component-card">
+                <h4>ChatContainer</h4>
+                <p>Orchestrates WebSocket, message flow, child components</p>
+                <span class="tag">Core</span>
+            </div>
+            <div class="component-card">
+                <h4>MessageBubble</h4>
+                <p>Renders user, system, script result, error messages</p>
+                <span class="tag">Display</span>
+            </div>
+            <div class="component-card">
+                <h4>QuickReplyButtons</h4>
+                <p>Yes/No or multiple choice buttons for ask_choice</p>
+                <span class="tag">Interactive</span>
+            </div>
+            <div class="component-card">
+                <h4>ScriptResultCard</h4>
+                <p>JSON output as formatted table or card</p>
+                <span class="tag">Display</span>
+            </div>
+            <div class="component-card">
+                <h4>ChatInput</h4>
+                <p>Text field + send button, Enter key submit</p>
+                <span class="tag">Input</span>
+            </div>
+            <div class="component-card">
+                <h4>TypingIndicator</h4>
+                <p>Animated dots while system processes</p>
+                <span class="tag">Feedback</span>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P2 - 5. API & WebSocket -->
+    <div class="section" id="p2-api">
+        <div class="section-title">
+            <span class="num">5</span>
+            API &amp; WebSocket Protocol
+        </div>
+        <p class="section-subtitle">How the frontend and backend communicate</p>
+
+        <div class="arch-card" style="margin-bottom: 20px;">
+            <h3>Endpoints</h3>
+            <table class="api-table">
+                <thead>
+                    <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method-ws">WS</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">ws://host/api/chat/{session_id}</td>
+                        <td style="color: #a0a0c0;">Real-time chat (main communication)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-get">GET</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/health</td>
+                        <td style="color: #a0a0c0;">Health check</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-get">GET</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/scenarios</td>
+                        <td style="color: #a0a0c0;">List all scenarios</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-get">GET</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/scenarios/{id}</td>
+                        <td style="color: #a0a0c0;">Get scenario details</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-post">POST</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/scenarios/reload</td>
+                        <td style="color: #a0a0c0;">Reload YAML files</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-post">POST</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/training/train</td>
+                        <td style="color: #a0a0c0;">Augment + retrain model</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-get">GET</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/training/status</td>
+                        <td style="color: #a0a0c0;">Model training status</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>WebSocket: Client &rarr; Server</h3>
+                <div class="code-block" style="margin: 10px 0 0 0;">
+<pre>
+<span class="code-comment">// User types a message</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"user_message"</span>,
+  <span class="code-key">"content"</span>: <span class="code-str">"what is the export limit"</span> }
+
+<span class="code-comment">// User clicks a choice button</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"choice_response"</span>,
+  <span class="code-key">"value"</span>: <span class="code-str">"yes"</span> }
+
+<span class="code-comment">// User provides text input</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"input_response"</span>,
+  <span class="code-key">"input_key"</span>: <span class="code-str">"new_limit"</span>,
+  <span class="code-key">"value"</span>: <span class="code-str">"5000"</span> }
+</pre>
+                </div>
+            </div>
+            <div class="arch-card">
+                <h3>WebSocket: Server &rarr; Client</h3>
+                <div class="code-block" style="margin: 10px 0 0 0;">
+<pre>
+<span class="code-comment">// Text message</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"text"</span>,
+  <span class="code-key">"content"</span>: <span class="code-str">"Starting: Export Limit"</span> }
+
+<span class="code-comment">// Script result</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"script_result"</span>,
+  <span class="code-key">"content"</span>: <span class="code-str">"{\"export_limit\": 1000}"</span>,
+  <span class="code-key">"display_message"</span>: <span class="code-str">"Current limit:"</span> }
+
+<span class="code-comment">// Choice question</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"question"</span>,
+  <span class="code-key">"content"</span>: <span class="code-str">"Change it?"</span>,
+  <span class="code-key">"options"</span>: [<span class="code-str">"Yes"</span>, <span class="code-str">"No"</span>] }
+
+<span class="code-comment">// Input request</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"input_request"</span>,
+  <span class="code-key">"content"</span>: <span class="code-str">"New limit?"</span>,
+  <span class="code-key">"input_key"</span>: <span class="code-str">"new_limit"</span> }
+</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P2 - 6. Architecture -->
+    <div class="section" id="p2-architecture">
+        <div class="section-title">
+            <span class="num">6</span>
+            System Architecture
+        </div>
+        <p class="section-subtitle">Backend and frontend component breakdown</p>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Backend (FastAPI / Python)</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>main.py</strong> &mdash; App entry, CORS, startup/shutdown</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>api/chat.py</strong> &mdash; WebSocket chat endpoint</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>api/scenarios.py</strong> &mdash; REST: list, get, reload</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>api/training.py</strong> &mdash; REST: train, status</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>core/flow_engine.py</strong> &mdash; Scenario state machine</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>core/script_executor.py</strong> &mdash; Sandboxed runner</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>core/scenario_loader.py</strong> &mdash; Parse YAML</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>core/session_manager.py</strong> &mdash; Session tracking</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/augmenter.py</strong> &mdash; Claude API augmentation</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/embedder.py</strong> &mdash; SentenceTransformer</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/trainer.py</strong> &mdash; Train MLPClassifier</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/intent_classifier.py</strong> &mdash; Predict intent</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Frontend (React / TypeScript)</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>ChatContainer</strong> &mdash; Main orchestrator</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>MessageList</strong> &mdash; Scrollable messages</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>MessageBubble</strong> &mdash; Message display</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>QuickReplyButtons</strong> &mdash; Choice buttons</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>ScriptResultCard</strong> &mdash; Script output</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>useWebSocket</strong> &mdash; WS + reconnect</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>useChatSession</strong> &mdash; Message state</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Sidebar</strong> &mdash; Scenario list</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Connection diagram -->
+        <div class="flow-container" style="margin-top: 20px;">
+            <div class="flow-title">Component Communication</div>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 25px; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="background: #1a2a4e; border: 2px solid #45aaf2; border-radius: 12px; padding: 18px 22px;">
+                        <strong style="color: #45aaf2;">React Frontend</strong><br>
+                        <span style="color: #8080b0; font-size: 0.78rem;">Port 3000</span>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="color: #ff9f43; font-size: 0.78rem; margin-bottom: 4px;">WebSocket</div>
+                    <div style="color: #6c63ff; font-size: 1.4rem;">&#x21C4;</div>
+                    <div style="color: #45aaf2; font-size: 0.78rem; margin-top: 4px;">REST API</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="background: #2a1a4e; border: 2px solid #6c63ff; border-radius: 12px; padding: 18px 22px;">
+                        <strong style="color: #6c63ff;">FastAPI Backend</strong><br>
+                        <span style="color: #8080b0; font-size: 0.78rem;">Port 8000</span>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="color: #8080b0; font-size: 1.4rem;">&#x27A1;</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="background: #1a3a2e; border: 2px solid #2ed573; border-radius: 12px; padding: 18px 22px;">
+                        <strong style="color: #2ed573;">Python Scripts</strong><br>
+                        <span style="color: #8080b0; font-size: 0.78rem;">Subprocess</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<div style="text-align: center; padding: 35px; color: #5a5a8a; border-top: 1px solid #2a2a4a;">
+    <p>SmartChat Design Document | Version 1.0</p>
+    <p style="font-size: 0.8rem; margin-top: 8px;">Two-page architecture: Create &rarr; Activate</p>
+</div>
+
+<!-- Page Switching Script -->
+<script>
+    function switchPage(pageId, tabElement) {
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // Deactivate all tabs
+        document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+        // Show selected page
+        document.getElementById(pageId).classList.add('active');
+        // Activate selected tab
+        tabElement.classList.add('active');
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

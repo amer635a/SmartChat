@@ -1,0 +1,62 @@
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import LabelEncoder
+import joblib
+import json
+import numpy as np
+from pathlib import Path
+from app.nlp.embedder import Embedder
+
+
+class IntentTrainer:
+    def __init__(self, embedder: Embedder, model_dir: Path):
+        self.embedder = embedder
+        self.model_dir = model_dir
+
+    def train(self, training_data: list[tuple[str, str]]) -> dict:
+        """
+        training_data: list of (phrase, scenario_id) tuples.
+        Returns training metadata dict.
+        """
+        if len(training_data) < 2:
+            return {"error": "Not enough training data (need at least 2 samples)"}
+
+        phrases, labels = zip(*training_data)
+        phrases = list(phrases)
+        labels = list(labels)
+
+        unique_labels = set(labels)
+        if len(unique_labels) < 2:
+            return {"error": "Need at least 2 different scenarios to train"}
+
+        # Encode all phrases to embeddings
+        embeddings = self.embedder.encode(phrases)
+
+        # Encode labels
+        label_encoder = LabelEncoder()
+        encoded_labels = label_encoder.fit_transform(labels)
+
+        # Train MLPClassifier
+        clf = MLPClassifier(
+            hidden_layer_sizes=(256, 128, 64),
+            activation="relu",
+            max_iter=500,
+            early_stopping=True,
+            validation_fraction=0.15,
+            random_state=42,
+        )
+        clf.fit(embeddings, encoded_labels)
+
+        # Save model artifacts
+        self.model_dir.mkdir(parents=True, exist_ok=True)
+        joblib.dump(clf, self.model_dir / "intent_classifier.joblib")
+        joblib.dump(label_encoder, self.model_dir / "label_encoder.joblib")
+
+        metadata = {
+            "num_scenarios": len(unique_labels),
+            "num_phrases": len(phrases),
+            "labels": label_encoder.classes_.tolist(),
+        }
+        with open(self.model_dir / "training_metadata.json", "w") as f:
+            json.dump(metadata, f, indent=2)
+
+        return metadata

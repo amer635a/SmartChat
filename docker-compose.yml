@@ -1,0 +1,19 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/scenarios:/app/scenarios
+      - ./backend/scripts:/app/scripts
+      - ./backend/trained_models:/app/trained_models
+      - ./backend/augmented_data:/app/augmented_data
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend

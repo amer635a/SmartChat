@@ -1,0 +1,26 @@
+.scenario-card {
+  background: #1a1a3e;
+  border: 1px solid #2a2a4a;
+  border-radius: 10px;
+  padding: 14px;
+  transition: all 0.2s;
+  cursor: default;
+}
+
+.scenario-card:hover {
+  border-color: #6c63ff;
+  background: #1e1e45;
+}
+
+.scenario-card h4 {
+  color: #d0d0f0;
+  font-size: 0.9rem;
+  margin: 0 0 4px 0;
+}
+
+.scenario-card p {
+  color: #6a6a9a;
+  font-size: 0.78rem;
+  margin: 0;
+  line-height: 1.4;
+}
