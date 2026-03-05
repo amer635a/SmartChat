@@ -10,6 +10,7 @@ AUGMENTED_DATA_DIR = BASE_DIR / "augmented_data"
 # NLP settings
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 CONFIDENCE_THRESHOLD = 0.4
+SIMILARITY_THRESHOLD = 0.45
 AUGMENTATION_COUNT = 10000
 
 # Script executor settings

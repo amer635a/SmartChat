@@ -45,9 +45,34 @@
   font-size: 1rem;
 }
 
+.chat-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .connection-status {
   color: #6a6a9a;
   font-size: 0.8rem;
+}
+
+.clear-chat-btn {
+  background: transparent;
+  border: 1px solid #3a3a5a;
+  border-radius: 8px;
+  color: #6a6a9a;
+  cursor: pointer;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.clear-chat-btn:hover {
+  color: #ff4757;
+  border-color: #ff4757;
+  background: rgba(255, 71, 87, 0.1);
 }
 
 /* Message List */
@@ -126,6 +151,14 @@
   color: #7ee0a0;
   border: 1px solid #2a5a3e;
   border-bottom-left-radius: 4px;
+}
+
+.ai-bubble {
+  background: linear-gradient(135deg, #1a1a3e, #2a1a4e);
+  color: #c0c0f0;
+  border: 1px solid #4a3a8a;
+  border-bottom-left-radius: 4px;
+  white-space: pre-wrap;
 }
 
 .error-bubble {

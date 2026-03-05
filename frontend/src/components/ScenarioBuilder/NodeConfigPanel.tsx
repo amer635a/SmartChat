@@ -34,6 +34,7 @@ export function NodeConfigPanel({ node, scripts, onUpdateNode, onDeleteNode }: P
     ask_choice: 'Ask Choice',
     ask_input: 'Ask Input',
     end: 'End',
+    goto: 'Go To',
   };
 
   return (
@@ -63,6 +64,25 @@ export function NodeConfigPanel({ node, scripts, onUpdateNode, onDeleteNode }: P
 
       {d.nodeType === 'end' && (
         <EndConfig data={d} onChange={update} />
+      )}
+
+      {d.nodeType === 'goto' && (
+        <GotoConfig data={d} onChange={update} />
+      )}
+
+      {d.nodeType !== 'start' && d.nodeType !== 'goto' && (
+        <div className="config-field" style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #2a2a4a' }}>
+          <label>Label (for Go To target)</label>
+          <input
+            className="builder-input"
+            value={d.label ?? ''}
+            onChange={e => update({ label: e.target.value || undefined })}
+            placeholder="e.g. ask_again"
+          />
+          <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
+            Set a label so a Go To node can jump back here.
+          </p>
+        </div>
       )}
     </div>
   );
@@ -275,5 +295,33 @@ function EndConfig({
         placeholder="Goodbye message..."
       />
     </div>
+  );
+}
+
+function GotoConfig({
+  data,
+  onChange,
+}: {
+  data: FlowNodeData;
+  onChange: (p: Partial<FlowNodeData>) => void;
+}) {
+  return (
+    <>
+      <div className="config-field">
+        <label>Target Label</label>
+        <input
+          className="builder-input"
+          value={data.target ?? ''}
+          onChange={e => onChange({ target: e.target.value || undefined })}
+          placeholder="e.g. ask_again"
+        />
+        <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
+          Enter the label of the node to jump to. Or connect the Go To output to the target node directly.
+        </p>
+      </div>
+      <p className="config-hint">
+        Tip: Set a label on the target node first, then enter that label here.
+      </p>
+    </>
   );
 }

@@ -6,19 +6,25 @@ from app.nlp.embedder import Embedder
 
 
 class IntentClassifier:
-    def __init__(self, embedder: Embedder, model_dir: Path, confidence_threshold: float = 0.4):
+    def __init__(self, embedder: Embedder, model_dir: Path, confidence_threshold: float = 0.4,
+                 similarity_threshold: float = 0.45):
         self.embedder = embedder
         self.model_dir = model_dir
         self.confidence_threshold = confidence_threshold
+        self.similarity_threshold = similarity_threshold
         self.clf = None
         self.label_encoder = None
+        self.centroids = None
 
     def load(self) -> bool:
         clf_path = self.model_dir / "intent_classifier.joblib"
         le_path = self.model_dir / "label_encoder.joblib"
+        centroids_path = self.model_dir / "centroids.npy"
         if clf_path.exists() and le_path.exists():
             self.clf = joblib.load(clf_path)
             self.label_encoder = joblib.load(le_path)
+            if centroids_path.exists():
+                self.centroids = np.load(centroids_path)
             return True
         return False
 
@@ -31,6 +37,16 @@ class IntentClassifier:
             raise RuntimeError("Model not loaded. Train first.")
 
         embedding = self.embedder.encode_single(text).reshape(1, -1)
+
+        # OOD check: cosine similarity to class centroids
+        if self.centroids is not None:
+            norm_emb = embedding / np.linalg.norm(embedding, axis=1, keepdims=True)
+            norm_cent = self.centroids / np.linalg.norm(self.centroids, axis=1, keepdims=True)
+            similarities = (norm_emb @ norm_cent.T)[0]
+            max_similarity = float(similarities.max())
+            if max_similarity < self.similarity_threshold:
+                return None, max_similarity
+
         probabilities = self.clf.predict_proba(embedding)[0]
         max_idx = probabilities.argmax()
         confidence = float(probabilities[max_idx])

@@ -67,6 +67,14 @@ export function MessageBubble({ message, onChoiceSelect, isLatest }: Props) {
     );
   }
 
+  if (message.type === 'ai_response') {
+    return (
+      <div className="message-row system-row">
+        <div className="message-bubble ai-bubble">{message.content}</div>
+      </div>
+    );
+  }
+
   if (message.type === 'error') {
     return (
       <div className="message-row system-row">

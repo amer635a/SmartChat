@@ -1,6 +1,6 @@
 {
   "num_scenarios": 3,
-  "num_phrases": 71668,
+  "num_phrases": 20008,
   "labels": [
     "export_limit",
     "user_account_status",

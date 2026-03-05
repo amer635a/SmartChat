@@ -9,7 +9,10 @@ class ChoiceOption(BaseModel):
 
 
 class Step(BaseModel):
-    action: Literal["run_script", "ask_choice", "ask_input", "end"]
+    action: Literal["run_script", "ask_choice", "ask_input", "end", "goto"]
+
+    # Optional label — used as a goto target
+    label: str | None = None
 
     # For run_script
     script: str | None = None
@@ -27,6 +30,9 @@ class Step(BaseModel):
 
     # For end
     message: str | None = None
+
+    # For goto — jump to a labeled step in the main steps list
+    target: str | None = None
 
 
 class Scenario(BaseModel):

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import (
     SCENARIOS_DIR, SCRIPTS_DIR, TRAINED_MODELS_DIR,
     AUGMENTED_DATA_DIR, EMBEDDING_MODEL, CONFIDENCE_THRESHOLD,
-    AUGMENTATION_COUNT, SCRIPT_TIMEOUT, CORS_ORIGINS,
+    SIMILARITY_THRESHOLD, AUGMENTATION_COUNT, SCRIPT_TIMEOUT, CORS_ORIGINS,
 )
 from app.core.scenario_registry import ScenarioRegistry
 from app.core.session_manager import SessionManager
@@ -15,6 +15,7 @@ from app.nlp.embedder import Embedder
 from app.nlp.augmenter import DataAugmenter
 from app.nlp.trainer import IntentTrainer
 from app.nlp.intent_classifier import IntentClassifier
+from app.nlp.llm_fallback import LLMFallback
 
 # Global instances
 scenario_registry = ScenarioRegistry(SCENARIOS_DIR)
@@ -26,12 +27,13 @@ embedder: Embedder = None
 augmenter: DataAugmenter = None
 trainer: IntentTrainer = None
 classifier: IntentClassifier = None
+llm_fallback: LLMFallback = None
 flow_engine: FlowEngine = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global embedder, augmenter, trainer, classifier, flow_engine
+    global embedder, augmenter, trainer, classifier, llm_fallback, flow_engine
 
     # Startup
     print("Loading scenarios...")
@@ -42,7 +44,7 @@ async def lifespan(app: FastAPI):
     embedder = Embedder(EMBEDDING_MODEL)
     augmenter = DataAugmenter(AUGMENTED_DATA_DIR, count=AUGMENTATION_COUNT)
     trainer = IntentTrainer(embedder, TRAINED_MODELS_DIR)
-    classifier = IntentClassifier(embedder, TRAINED_MODELS_DIR, CONFIDENCE_THRESHOLD)
+    classifier = IntentClassifier(embedder, TRAINED_MODELS_DIR, CONFIDENCE_THRESHOLD, SIMILARITY_THRESHOLD)
 
     # Try to load existing trained model
     if classifier.load():
@@ -50,7 +52,9 @@ async def lifespan(app: FastAPI):
     else:
         print("No trained model found. Please train via POST /api/training/train")
 
-    flow_engine = FlowEngine(scenario_registry, script_executor)
+    scenario_names = [s.name for s in scenario_registry.get_all()]
+    llm_fallback = LLMFallback(scenario_names)
+    flow_engine = FlowEngine(scenario_registry, script_executor, llm_fallback)
     print("SmartChat backend is ready!")
 
     yield

@@ -1,15 +1,18 @@
 from app.core.scenario_registry import ScenarioRegistry
 from app.core.script_executor import ScriptExecutor
 from app.nlp.intent_classifier import IntentClassifier
+from app.nlp.llm_fallback import LLMFallback
 from app.models.session import ChatSession, SessionState
 from app.models.messages import ResponseMessage
 from app.models.scenario import Step
 
 
 class FlowEngine:
-    def __init__(self, registry: ScenarioRegistry, executor: ScriptExecutor):
+    def __init__(self, registry: ScenarioRegistry, executor: ScriptExecutor,
+                 llm_fallback: LLMFallback | None = None):
         self.registry = registry
         self.executor = executor
+        self.llm_fallback = llm_fallback
 
     async def handle_message(
         self, session: ChatSession, user_text: str, classifier: IntentClassifier
@@ -28,6 +31,14 @@ class FlowEngine:
             scenario = self.registry.get(intent_id) if intent_id else None
 
             if scenario is None:
+                # Try LLM fallback for unknown queries
+                if self.llm_fallback:
+                    try:
+                        llm_response = await self.llm_fallback.generate_response(user_text)
+                        if llm_response:
+                            return [ResponseMessage(type="ai_response", content=llm_response)]
+                    except Exception:
+                        pass
                 return [ResponseMessage(
                     type="error",
                     content="I didn't understand that. Could you rephrase your question?"
@@ -119,6 +130,21 @@ class FlowEngine:
                 input_key=step.input_key
             ))
             session.state = SessionState.AWAITING_INPUT
+
+        elif step.action == "goto":
+            # Jump to a labeled step in the main steps list
+            scenario = self.registry.get(session.active_scenario_id)
+            if scenario and step.target:
+                for idx, s in enumerate(scenario.steps):
+                    if s.label == step.target:
+                        session.current_step_index = idx
+                        session.current_branch_key = None
+                        session.current_branch_step_index = 0
+                        session.state = SessionState.IDLE
+                        return await self._execute_current_step(session)
+            # Target not found — end scenario
+            session.reset()
+            return [ResponseMessage(type="error", content=f"Goto target '{step.target}' not found.")]
 
         elif step.action == "end":
             msg = step.message or "Scenario complete. How can I help you next?"

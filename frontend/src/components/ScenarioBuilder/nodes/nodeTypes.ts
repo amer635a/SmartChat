@@ -5,6 +5,7 @@ import { RunScriptNode } from './RunScriptNode';
 import { AskChoiceNode } from './AskChoiceNode';
 import { AskInputNode } from './AskInputNode';
 import { EndNode } from './EndNode';
+import { GotoNode } from './GotoNode';
 
 export const nodeTypes = {
   start: StartNode,
@@ -12,4 +13,5 @@ export const nodeTypes = {
   ask_choice: AskChoiceNode,
   ask_input: AskInputNode,
   end: EndNode,
+  goto: GotoNode,
 } as const;

@@ -1,7 +1,9 @@
 import type { Node, Edge } from '@xyflow/react';
 
 export interface FlowNodeData extends Record<string, unknown> {
-  nodeType: 'start' | 'run_script' | 'ask_choice' | 'ask_input' | 'end';
+  nodeType: 'start' | 'run_script' | 'ask_choice' | 'ask_input' | 'end' | 'goto';
+  // label — used as a goto target identifier
+  label?: string;
   // run_script fields
   script?: string;
   args?: Record<string, string>;
@@ -14,6 +16,8 @@ export interface FlowNodeData extends Record<string, unknown> {
   validation?: string;
   // end fields
   message?: string;
+  // goto fields
+  target?: string;
 }
 
 export type FlowNode = Node<FlowNodeData>;

@@ -7,10 +7,10 @@
 }
 
 .flow-editor-top {
-  padding: 20px 24px 0;
+  padding: 16px 24px 0;
   flex-shrink: 0;
   overflow-y: auto;
-  max-height: 40vh;
+  max-height: 25vh;
 }
 
 .flow-editor-top-sections {
@@ -55,7 +55,6 @@
 .flow-toolbar-hint {
   color: #3a3a5a;
   font-size: 0.75rem;
-  margin-left: auto;
   white-space: nowrap;
 }
 
@@ -116,15 +115,34 @@
 .flow-canvas-container .react-flow__edge-path {
   stroke: #4a4a8a;
   stroke-width: 2;
+  cursor: pointer;
+}
+
+.flow-canvas-container .react-flow__edge:hover .react-flow__edge-path {
+  stroke: #6c63ff;
+  stroke-width: 2.5;
 }
 
 .flow-canvas-container .react-flow__edge.selected .react-flow__edge-path {
   stroke: #6c63ff;
+  stroke-width: 2.5;
 }
 
+/* Draggable edge — bend point (blue, drag to move, dbl-click to remove) */
+.edge-bend-point {
+  fill: #6c63ff;
+  stroke: #0d0d20;
+  stroke-width: 2;
+  cursor: grab;
+}
+.edge-bend-point:hover {
+  fill: #fff;
+}
+
+
 .flow-canvas-container .react-flow__handle {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border: 2px solid #6c63ff;
   background: #0d0d20;
 }
@@ -196,9 +214,9 @@
   background: #1a1a3e;
   border: 2px solid #2a2a4a;
   border-radius: 10px;
-  padding: 12px 16px;
-  min-width: 190px;
-  max-width: 240px;
+  padding: 10px 14px;
+  min-width: 170px;
+  max-width: 230px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
   position: relative;
@@ -218,26 +236,32 @@
   background: #1a1a4a;
 }
 
+.flow-node-goto {
+  border-color: #9b59b6;
+  background: #2a1a3e;
+  border-style: dashed;
+}
+
 .node-type-badge {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   opacity: 0.85;
 }
 
 .node-label {
   color: #e0e0e0;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
   word-break: break-word;
 }
 
 .node-detail {
   color: #6a6a9a;
-  font-size: 0.76rem;
-  margin-top: 4px;
+  font-size: 0.75rem;
+  margin-top: 3px;
 }
 
 .node-detail code {
@@ -258,9 +282,9 @@
   background: rgba(230, 126, 34, 0.15);
   border: 1px solid rgba(230, 126, 34, 0.4);
   color: #e67e22;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 10px;
-  font-size: 0.73rem;
+  font-size: 0.7rem;
   font-weight: 600;
 }
 
@@ -283,7 +307,7 @@
 }
 
 .node-handle-label {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: #e67e22;
   text-transform: uppercase;
@@ -291,19 +315,105 @@
   background: rgba(230, 126, 34, 0.1);
   border: 1px solid rgba(230, 126, 34, 0.3);
   border-radius: 4px;
-  padding: 1px 6px;
+  padding: 1px 5px;
   white-space: nowrap;
+}
+
+/* Expand button in toolbar */
+.btn-expand-canvas {
+  background: rgba(108, 99, 255, 0.12);
+  border: 1px solid #6c63ff;
+  color: #6c63ff;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.btn-expand-canvas:hover {
+  background: rgba(108, 99, 255, 0.25);
+  color: #fff;
+}
+
+/* Fullscreen expanded overlay */
+.flow-expanded-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #0a0a1a;
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-expanded-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #0d0d20;
+  border-bottom: 1px solid #2a2a4a;
+  flex-shrink: 0;
+}
+
+.flow-expanded-title {
+  color: #e0e0e0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.btn-close-expanded {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid #ff4757;
+  color: #ff4757;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.btn-close-expanded:hover {
+  background: rgba(255, 71, 87, 0.25);
+  color: #fff;
+}
+
+.flow-expanded-canvas-area {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Bottom Action Bar */
 .flow-editor-bottom {
-  padding: 0 24px;
+  padding: 8px 24px;
   flex-shrink: 0;
   border-top: 1px solid #2a2a4a;
   background: #0a0a1a;
+  position: relative;
+  z-index: 10;
 }
 
 .flow-editor-bottom .action-bar {
   border-top: none;
   margin-top: 0;
+  padding: 8px 0;
+}
+
+.flow-save-error {
+  color: #ff4757;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 8px;
 }

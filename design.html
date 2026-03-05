@@ -370,6 +370,20 @@
             border: 1px solid #2a4a2e; border-bottom-left-radius: 4px;
             font-family: monospace; font-size: 0.82rem;
         }
+        .msg.ai {
+            background: linear-gradient(135deg, #1a1a3e, #2a1a4e);
+            color: #c0c0f0;
+            align-self: flex-start;
+            border: 1px solid #4a3a8a;
+            border-bottom-left-radius: 4px;
+        }
+        .msg.error-msg {
+            background: linear-gradient(135deg, #3a1a1e, #2a1a1e);
+            color: #ff8080;
+            align-self: flex-start;
+            border: 1px solid #5a2a2a;
+            border-bottom-left-radius: 4px;
+        }
         .quick-btns { display: flex; gap: 8px; align-self: flex-start; }
         .quick-btn {
             padding: 7px 18px; border-radius: 18px;
@@ -423,7 +437,7 @@
             border: 1px solid #2a2a4a;
             border-radius: 14px;
             overflow: hidden;
-            max-width: 700px;
+            max-width: 900px;
             margin: 25px auto;
         }
         .builder-header {
@@ -485,6 +499,7 @@
         .type-choice { background: rgba(255,159,67,0.2); color: #ff9f43; }
         .type-input { background: rgba(69,170,242,0.2); color: #45aaf2; }
         .type-end { background: rgba(46,213,115,0.2); color: #2ed573; }
+        .type-goto { background: rgba(155,89,182,0.2); color: #9b59b6; }
         .builder-step-item p { color: #c0c0e0; font-size: 0.85rem; flex: 1; }
         .builder-btn {
             background: #6c63ff;
@@ -502,6 +517,102 @@
             color: #8080b0;
         }
         .builder-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+
+        /* Flow Editor Canvas Mockup */
+        .canvas-mockup {
+            background: #0d0d20;
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 30px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        .canvas-mockup .canvas-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle, #2a2a4a 1px, transparent 1px);
+            background-size: 25px 25px;
+            opacity: 0.3;
+        }
+        .canvas-node {
+            position: absolute;
+            background: #1a1a3e;
+            border: 2px solid #3a3a6e;
+            border-radius: 10px;
+            padding: 12px 18px;
+            text-align: center;
+            z-index: 2;
+            min-width: 140px;
+        }
+        .canvas-node .node-badge {
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .canvas-node .node-text {
+            font-size: 0.8rem;
+            color: #c0c0e0;
+        }
+        .canvas-node.node-start { border-color: #45aaf2; }
+        .canvas-node.node-start .node-badge { color: #45aaf2; }
+        .canvas-node.node-script { border-color: #6c63ff; }
+        .canvas-node.node-script .node-badge { color: #6c63ff; }
+        .canvas-node.node-choice { border-color: #ff9f43; }
+        .canvas-node.node-choice .node-badge { color: #ff9f43; }
+        .canvas-node.node-input { border-color: #45aaf2; }
+        .canvas-node.node-input .node-badge { color: #45aaf2; }
+        .canvas-node.node-end { border-color: #2ed573; }
+        .canvas-node.node-end .node-badge { color: #2ed573; }
+        .canvas-node.node-goto { border-color: #9b59b6; border-style: dashed; }
+        .canvas-node.node-goto .node-badge { color: #9b59b6; }
+        .canvas-edge {
+            position: absolute;
+            z-index: 1;
+        }
+        .canvas-handle {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #6c63ff;
+            position: absolute;
+        }
+
+        /* Config Panel Mockup */
+        .config-panel-mock {
+            background: #12122a;
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 18px;
+            min-width: 240px;
+        }
+        .config-panel-mock h4 {
+            color: #6c63ff;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .config-panel-mock .cfg-field { margin-bottom: 12px; }
+        .config-panel-mock .cfg-field label {
+            display: block;
+            color: #8080b0;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .config-panel-mock .cfg-input {
+            background: #0d0d20;
+            border: 1px solid #2a2a4a;
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: #e0e0e0;
+            font-size: 0.82rem;
+            width: 100%;
+        }
 
         /* API Table */
         .api-table {
@@ -522,6 +633,7 @@
         .method-get { color: #2ed573; }
         .method-post { color: #ff9f43; }
         .method-ws { color: #45aaf2; }
+        .method-del { color: #ff6b6b; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -540,7 +652,7 @@
 <!-- Header -->
 <div class="header">
     <h1>Smart<span>Chat</span></h1>
-    <p>Scenario-Driven Support Agent Chat System</p>
+    <p>Scenario-Driven Support Agent Chat System with AI Fallback</p>
 </div>
 
 <!-- Page Tabs -->
@@ -552,6 +664,10 @@
     <div class="page-tab" onclick="switchPage('page2', this)">
         <span class="tab-num">2</span>
         Activate the Chat
+    </div>
+    <div class="page-tab" onclick="switchPage('page3', this)">
+        <span class="tab-num">3</span>
+        AI &amp; Neural Network
     </div>
 </div>
 
@@ -566,13 +682,13 @@
         <a href="#p1-scripts">Scripts</a>
         <a href="#p1-augmentation">AI Augmentation</a>
         <a href="#p1-training">Training</a>
-        <a href="#p1-builder">Scenario Builder</a>
+        <a href="#p1-builder">Visual Flow Editor</a>
     </div>
 
     <div class="page-banner">
         <div class="icon">&#x1F4CB;</div>
         <h2>Page 1: Create a Scenario</h2>
-        <p>Define what the chat system can do. Each scenario is a workflow with steps, scripts, and questions. The admin creates scenarios, the system learns from them.</p>
+        <p>Define what the chat system can do. Each scenario is a workflow with steps, scripts, branching, and looping. Build visually with the node-based flow editor.</p>
     </div>
 
     <!-- P1 - 1. Overview -->
@@ -605,7 +721,7 @@
             <div class="overview-box">
                 <div class="icon">&#x1F9E0;</div>
                 <h3>Train Model</h3>
-                <p>Neural network learns<br>to recognize intent</p>
+                <p>Neural network learns<br>intent + centroids</p>
             </div>
             <span class="arrow">&#x27A1;</span>
             <div class="overview-box" style="border-color: #2ed573;">
@@ -648,6 +764,7 @@
     <span class="code-key">display_message:</span> <span class="code-str">"Current export limit:"</span>
 
   - <span class="code-key">action:</span> <span class="code-val">ask_choice</span>                    <span class="code-comment"># Step 2: Ask a question</span>
+    <span class="code-key">label:</span> <span class="code-val">ask_again</span>                       <span class="code-comment"># Label for goto target</span>
     <span class="code-key">question:</span> <span class="code-str">"Would you like to change it?"</span>
     <span class="code-key">options:</span>
       - <span class="code-key">label:</span> <span class="code-str">"Yes"</span>
@@ -666,6 +783,9 @@
             <span class="code-key">new_limit:</span> <span class="code-str">"$input.new_limit"</span>    <span class="code-comment"># Variable from ask_input</span>
           <span class="code-key">display_message:</span> <span class="code-str">"Export limit updated:"</span>
 
+        - <span class="code-key">action:</span> <span class="code-val">goto</span>                     <span class="code-comment"># Loop back to the choice</span>
+          <span class="code-key">target:</span> <span class="code-val">ask_again</span>                  <span class="code-comment"># Jump to labeled step</span>
+
       <span class="code-key">no:</span>
         - <span class="code-key">action:</span> <span class="code-val">end</span>
           <span class="code-key">message:</span> <span class="code-str">"No changes made."</span>
@@ -679,6 +799,7 @@
                     <li><span class="bullet" style="color: #6c63ff;">&#x25CF;</span> <strong>run_script</strong> &mdash; Execute a Python script and show the result</li>
                     <li><span class="bullet" style="color: #ff9f43;">&#x25CF;</span> <strong>ask_choice</strong> &mdash; Ask Yes/No or multiple choice (with branches)</li>
                     <li><span class="bullet" style="color: #45aaf2;">&#x25CF;</span> <strong>ask_input</strong> &mdash; Ask for free-text input (store as variable)</li>
+                    <li><span class="bullet" style="color: #9b59b6;">&#x25CF;</span> <strong>goto</strong> &mdash; Jump to a labeled step (enables looping flows)</li>
                     <li><span class="bullet" style="color: #2ed573;">&#x25CF;</span> <strong>end</strong> &mdash; End the scenario with a closing message</li>
                 </ul>
             </div>
@@ -686,8 +807,9 @@
                 <h3>Key Features</h3>
                 <ul>
                     <li><span class="bullet">&#x25B6;</span> <strong>Branching:</strong> ask_choice branches lead to different step sequences</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Looping:</strong> goto + label enables cycles (e.g., "ask again")</li>
                     <li><span class="bullet">&#x25B6;</span> <strong>Variables:</strong> $input.key_name passes user answers to scripts</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>Nesting:</strong> Branches can contain more ask_choice steps</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Labels:</strong> Any step can have a label as a goto target</li>
                     <li><span class="bullet">&#x25B6;</span> <strong>Simple:</strong> Non-developers can read and edit YAML files</li>
                 </ul>
             </div>
@@ -837,7 +959,6 @@ Generate exactly <span class="code-val">10,000</span> unique variations. Include
 - Different word orders
 - Questions vs statements
 - With extra words / filler words
-- Multi-language hints (Frenglish, etc.)
 
 Return ONLY the phrases, one per line. No numbering.
 """</span>
@@ -877,7 +998,7 @@ Return ONLY the phrases, one per line. No numbering.
             <span class="num">5</span>
             Model Training
         </div>
-        <p class="section-subtitle">How the neural network learns to recognize intent</p>
+        <p class="section-subtitle">How the neural network learns to recognize intent with out-of-distribution detection</p>
 
         <div class="pipeline">
             <div class="pipeline-step">
@@ -902,10 +1023,17 @@ Return ONLY the phrases, one per line. No numbering.
             </div>
             <span class="pipe-arrow">&#x27A1;</span>
             <div class="pipeline-step">
-                <div class="pipe-box" style="border-color: #2ed573;">
-                    <h4>Save Model</h4>
+                <div class="pipe-box" style="border-color: #9b59b6;">
+                    <h4>Compute Centroids</h4>
                 </div>
-                <p>classifier.joblib<br>label_encoder.joblib</p>
+                <p>Mean embedding<br>per class (OOD)</p>
+            </div>
+            <span class="pipe-arrow">&#x27A1;</span>
+            <div class="pipeline-step">
+                <div class="pipe-box" style="border-color: #2ed573;">
+                    <h4>Save Artifacts</h4>
+                </div>
+                <p>classifier.joblib<br>centroids.npy</p>
             </div>
         </div>
 
@@ -916,86 +1044,216 @@ Return ONLY the phrases, one per line. No numbering.
                     <li><span class="bullet">&#x25B6;</span> <strong>Embedding:</strong> all-MiniLM-L6-v2 (22MB, CPU-friendly)</li>
                     <li><span class="bullet">&#x25B6;</span> <strong>Classifier:</strong> MLPClassifier (256, 128, 64), ReLU</li>
                     <li><span class="bullet">&#x25B6;</span> <strong>Confidence threshold:</strong> 0.4 minimum</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Similarity threshold:</strong> 0.45 cosine (OOD gate)</li>
                     <li><span class="bullet">&#x25B6;</span> <strong>Training time:</strong> ~30s for 50K+ phrases</li>
                 </ul>
             </div>
             <div class="arch-card">
-                <h3>Adding a New Scenario</h3>
+                <h3>Out-of-Distribution Detection</h3>
                 <ul>
-                    <li><span class="bullet"><span class="step-num">1</span></span> Create YAML in scenarios/</li>
-                    <li><span class="bullet"><span class="step-num">2</span></span> Write Python scripts in scripts/</li>
-                    <li><span class="bullet"><span class="step-num">3</span></span> POST /api/scenarios/reload</li>
-                    <li><span class="bullet"><span class="step-num">4</span></span> POST /api/training/train</li>
-                    <li><span class="bullet"><span class="step-num">5</span></span> Done! Scenario is live</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Problem:</strong> MLP always picks a class, even for irrelevant input</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Solution:</strong> Cosine similarity to per-class centroids</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Centroids:</strong> Mean embedding of all training phrases per scenario</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Gate:</strong> If max similarity &lt; 0.45, classify as "unknown"</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Result:</strong> "hello how are you" &rarr; UNKNOWN (0.17 similarity)</li>
                 </ul>
+            </div>
+        </div>
+
+        <div class="arch-card full-width" style="margin-top: 0;">
+            <h3>Saved Model Artifacts</h3>
+            <div class="code-block" style="margin: 10px 0 0 0;">
+<pre>
+trained_models/
+  <span class="code-key">intent_classifier.joblib</span>    <span class="code-comment"># MLPClassifier weights</span>
+  <span class="code-key">label_encoder.joblib</span>        <span class="code-comment"># Scenario ID &lt;-&gt; numeric label mapping</span>
+  <span class="code-key">centroids.npy</span>               <span class="code-comment"># Per-class centroid vectors for OOD detection</span>
+  <span class="code-key">training_metadata.json</span>      <span class="code-comment"># { num_scenarios, num_phrases, labels }</span>
+</pre>
             </div>
         </div>
     </div>
 
     <hr class="divider">
 
-    <!-- P1 - 6. Scenario Builder UI -->
+    <!-- P1 - 6. Visual Flow Editor -->
     <div class="section" id="p1-builder">
         <div class="section-title">
             <span class="num">6</span>
-            Scenario Builder (UI Preview)
+            Visual Flow Editor (React Flow)
         </div>
-        <p class="section-subtitle">What the scenario creation interface will look like</p>
+        <p class="section-subtitle">Drag-and-drop node-based scenario builder with @xyflow/react</p>
 
-        <div class="builder-mockup">
+        <!-- Flow Editor Layout Description -->
+        <div class="arch-grid" style="margin-bottom: 25px;">
+            <div class="arch-card">
+                <h3>Editor Layout</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Left sidebar:</strong> Scenario list + metadata (name, description, phrases)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Center canvas:</strong> React Flow node graph with draggable nodes</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Right panel:</strong> Config panel for selected node</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Bottom toolbar:</strong> Add node buttons + Save/Expand controls</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>MiniMap:</strong> Overview navigation in corner</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Node Types</h3>
+                <ul>
+                    <li><span class="bullet" style="color: #45aaf2;">&#x25CF;</span> <strong>Start</strong> &mdash; Entry point (one per flow, cannot be deleted)</li>
+                    <li><span class="bullet" style="color: #6c63ff;">&#x25CF;</span> <strong>Run Script</strong> &mdash; Execute Python script, single output handle</li>
+                    <li><span class="bullet" style="color: #ff9f43;">&#x25CF;</span> <strong>Ask Choice</strong> &mdash; N output handles (one per option, e.g. "yes"/"no")</li>
+                    <li><span class="bullet" style="color: #45aaf2;">&#x25CF;</span> <strong>Ask Input</strong> &mdash; Free-text input, single output handle</li>
+                    <li><span class="bullet" style="color: #9b59b6;">&#x25CF;</span> <strong>Go To</strong> &mdash; Jump to labeled node (dashed purple border)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x25CF;</span> <strong>End</strong> &mdash; Terminal node with goodbye message</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Canvas Mockup with nodes -->
+        <div class="builder-mockup" style="max-width: 900px;">
             <div class="builder-header">
                 <span style="color: #6c63ff; font-size: 1.2rem;">&#x2699;</span>
-                <h4>Create New Scenario</h4>
+                <h4>Visual Flow Editor</h4>
+                <span style="color: #8080b0; font-size: 0.8rem; margin-left: auto;">Battery SOC Scenario</span>
             </div>
-            <div class="builder-body">
-                <div class="builder-field">
-                    <label>Scenario Name</label>
-                    <div class="field-input">Export Limit</div>
-                </div>
-                <div class="builder-field">
-                    <label>Description</label>
-                    <div class="field-input">Check or modify the site export limit.</div>
-                </div>
-                <div class="builder-field">
-                    <label>Training Phrases (5-10 seed phrases)</label>
-                    <div class="field-textarea">what is the export limit
-show export limit
-export limit of the site
-how many records can I export
-check export limit</div>
-                </div>
-                <div class="builder-field">
-                    <label>Steps</label>
-                    <div class="builder-step-item">
-                        <span class="step-num">1</span>
-                        <span class="step-type type-script">run_script</span>
-                        <p>get_export_limit.py</p>
+            <div style="display: flex;">
+                <!-- Canvas Area -->
+                <div style="flex: 1; position: relative; min-height: 420px; background: #0a0a1a; overflow: hidden;">
+                    <!-- Grid Background -->
+                    <div style="position: absolute; inset: 0; background-image: radial-gradient(circle, #2a2a4a 1px, transparent 1px); background-size: 25px 25px; opacity: 0.3;"></div>
+
+                    <!-- Start Node -->
+                    <div class="canvas-node node-start" style="top: 20px; left: 50%; transform: translateX(-50%);">
+                        <div class="node-badge">Start</div>
+                        <div class="node-text">Entry Point</div>
                     </div>
-                    <div class="builder-step-item">
-                        <span class="step-num">2</span>
-                        <span class="step-type type-choice">ask_choice</span>
-                        <p>"Would you like to change it?" &rarr; Yes / No</p>
+
+                    <!-- Run Script Node -->
+                    <div class="canvas-node node-script" style="top: 100px; left: 50%; transform: translateX(-50%);">
+                        <div class="node-badge">Run Script</div>
+                        <div class="node-text">get_battery_soc.py</div>
                     </div>
-                    <div class="builder-step-item" style="margin-left: 30px; border-color: #ff9f43;">
-                        <span style="color: #ff9f43; font-size: 0.8rem;">YES &rarr;</span>
-                        <span class="step-type type-input">ask_input</span>
-                        <p>"New limit?" &rarr; $input.new_limit</p>
+
+                    <!-- Ask Choice Node -->
+                    <div class="canvas-node node-choice" style="top: 190px; left: 50%; transform: translateX(-50%);">
+                        <div class="node-badge">Ask Choice</div>
+                        <div class="node-text">Check again?</div>
+                        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 6px;">
+                            <span style="font-size: 0.7rem; color: #ff9f43;">Yes</span>
+                            <span style="font-size: 0.7rem; color: #ff9f43;">No</span>
+                        </div>
                     </div>
-                    <div class="builder-step-item" style="margin-left: 30px; border-color: #ff9f43;">
-                        <span style="color: #ff9f43; font-size: 0.8rem;">YES &rarr;</span>
-                        <span class="step-type type-script">run_script</span>
-                        <p>set_export_limit.py --args new_limit</p>
+
+                    <!-- Goto Node (Yes branch) -->
+                    <div class="canvas-node node-goto" style="top: 310px; left: 30%; transform: translateX(-50%);">
+                        <div class="node-badge">Go To</div>
+                        <div class="node-text">&rarr; ask_again</div>
                     </div>
-                    <div class="builder-step-item" style="margin-left: 30px; border-color: #2ed573;">
-                        <span style="color: #2ed573; font-size: 0.8rem;">NO &rarr;</span>
-                        <span class="step-type type-end">end</span>
-                        <p>"No changes made."</p>
+
+                    <!-- End Node (No branch) -->
+                    <div class="canvas-node node-end" style="top: 310px; left: 70%; transform: translateX(-50%);">
+                        <div class="node-badge">End</div>
+                        <div class="node-text">Goodbye!</div>
+                    </div>
+
+                    <!-- Connection lines (SVG) -->
+                    <svg style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;">
+                        <!-- Start -> Script -->
+                        <line x1="50%" y1="58" x2="50%" y2="100" stroke="#45aaf2" stroke-width="2"/>
+                        <!-- Script -> Choice -->
+                        <line x1="50%" y1="138" x2="50%" y2="190" stroke="#6c63ff" stroke-width="2"/>
+                        <!-- Choice -> Goto (Yes) -->
+                        <line x1="44%" y1="260" x2="30%" y2="310" stroke="#ff9f43" stroke-width="2"/>
+                        <!-- Choice -> End (No) -->
+                        <line x1="56%" y1="260" x2="70%" y2="310" stroke="#ff9f43" stroke-width="2"/>
+                        <!-- Goto -> Script (loop back) dashed -->
+                        <line x1="30%" y1="310" x2="15%" y2="120" stroke="#9b59b6" stroke-width="2" stroke-dasharray="6,4"/>
+                        <line x1="15%" y1="120" x2="44%" y2="120" stroke="#9b59b6" stroke-width="2" stroke-dasharray="6,4"/>
+                    </svg>
+                </div>
+
+                <!-- Config Panel -->
+                <div class="config-panel-mock" style="border-left: 1px solid #2a2a4a; border-radius: 0;">
+                    <h4>Ask Choice</h4>
+                    <div class="cfg-field">
+                        <label>Question</label>
+                        <div class="cfg-input">Check again?</div>
+                    </div>
+                    <div class="cfg-field">
+                        <label>Options</label>
+                        <div class="cfg-input" style="margin-bottom: 4px;">Yes</div>
+                        <div class="cfg-input">No</div>
+                    </div>
+                    <div class="cfg-field">
+                        <label>Label (Go To target)</label>
+                        <div class="cfg-input">ask_again</div>
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <button class="builder-btn" style="font-size: 0.78rem; padding: 6px 14px; background: #ff4757;">Delete</button>
                     </div>
                 </div>
-                <div class="builder-actions">
-                    <button class="builder-btn secondary">+ Add Step</button>
-                    <button class="builder-btn">Save &amp; Train Model</button>
-                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div style="display: flex; gap: 8px; padding: 10px 16px; background: #1a1a3e; border-top: 1px solid #2a2a4a; flex-wrap: wrap; align-items: center;">
+                <span style="color: #8080b0; font-size: 0.75rem; margin-right: 8px;">Add:</span>
+                <button class="builder-btn" style="font-size: 0.72rem; padding: 4px 12px; margin: 0; background: #6c63ff;">+ Script</button>
+                <button class="builder-btn" style="font-size: 0.72rem; padding: 4px 12px; margin: 0; background: #ff9f43;">+ Choice</button>
+                <button class="builder-btn" style="font-size: 0.72rem; padding: 4px 12px; margin: 0; background: #45aaf2;">+ Input</button>
+                <button class="builder-btn" style="font-size: 0.72rem; padding: 4px 12px; margin: 0; background: #9b59b6;">+ Go To</button>
+                <button class="builder-btn" style="font-size: 0.72rem; padding: 4px 12px; margin: 0; background: #2ed573;">+ End</button>
+                <span style="flex: 1;"></span>
+                <button class="builder-btn" style="font-size: 0.78rem; padding: 6px 16px; margin: 0;">Save</button>
+            </div>
+        </div>
+
+        <div class="arch-grid" style="margin-top: 25px;">
+            <div class="arch-card">
+                <h3>Handle Naming Convention</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Input (top):</strong> <code>id="in"</code> <code>type="target"</code></li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Default output (bottom):</strong> <code>id="out"</code> <code>type="source"</code></li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Branch outputs:</strong> <code>id="out-{option.value}"</code> per option</li>
+                    <li><span class="bullet">&#x25B6;</span> Multiple edges allowed to same input handle</li>
+                    <li><span class="bullet">&#x25B6;</span> Custom draggable edges with bend points</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Persistence</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>YAML:</strong> Steps + branches (tree structure)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>localStorage:</strong> Node positions, bend points, extra edges</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Deterministic IDs:</strong> node-0, node-1, node-0-yes-0 (stable across reloads)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Undo/Redo:</strong> Snapshot history for node/edge changes</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Bidirectional:</strong> stepsToFlow / flowToSteps conversion</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-card full-width" style="margin-top: 0;">
+            <h3>Flow Editor Files</h3>
+            <div class="code-block" style="margin: 10px 0 0 0;">
+<pre>
+frontend/src/components/ScenarioBuilder/
+  <span class="code-key">FlowEditor.tsx</span>          <span class="code-comment"># Main orchestrator (state, save, undo/redo)</span>
+  <span class="code-key">FlowCanvas.tsx</span>          <span class="code-comment"># ReactFlow canvas wrapper</span>
+  <span class="code-key">NodeConfigPanel.tsx</span>     <span class="code-comment"># Right sidebar config for selected node</span>
+  <span class="code-key">FlowEditor.css</span>          <span class="code-comment"># Node/edge/canvas styling</span>
+  nodes/
+    <span class="code-key">nodeTypes.ts</span>          <span class="code-comment"># Module-scope node type registry (React Flow constraint)</span>
+    <span class="code-key">StartNode.tsx</span>         <span class="code-comment"># Entry point node</span>
+    <span class="code-key">RunScriptNode.tsx</span>     <span class="code-comment"># Script execution node</span>
+    <span class="code-key">AskChoiceNode.tsx</span>     <span class="code-comment"># Choice with N output handles</span>
+    <span class="code-key">AskInputNode.tsx</span>      <span class="code-comment"># Free-text input node</span>
+    <span class="code-key">GotoNode.tsx</span>          <span class="code-comment"># Jump to labeled node (dashed purple)</span>
+    <span class="code-key">EndNode.tsx</span>           <span class="code-comment"># Terminal node</span>
+  edges/
+    <span class="code-key">DraggableEdge.tsx</span>     <span class="code-comment"># Custom edge with draggable bend points</span>
+  utils/
+    <span class="code-key">stepsToFlow.ts</span>        <span class="code-comment"># YAML steps -> React Flow nodes/edges</span>
+    <span class="code-key">flowToSteps.ts</span>        <span class="code-comment"># React Flow graph -> YAML steps (cycle-safe)</span>
+    <span class="code-key">autoLayout.ts</span>         <span class="code-comment"># Automatic node positioning</span>
+</pre>
             </div>
         </div>
     </div>
@@ -1011,6 +1269,7 @@ check export limit</div>
         <a href="#p2-overview">Overview</a>
         <a href="#p2-flow">Chat Flow</a>
         <a href="#p2-nlp">Intent Recognition</a>
+        <a href="#p2-fallback">AI Fallback</a>
         <a href="#p2-chat-ui">Chat Interface</a>
         <a href="#p2-api">API &amp; WebSocket</a>
         <a href="#p2-architecture">Architecture</a>
@@ -1019,7 +1278,7 @@ check export limit</div>
     <div class="page-banner">
         <div class="icon">&#x1F4AC;</div>
         <h2>Page 2: Activate the Chat</h2>
-        <p>The support agent opens the chat, types a sentence, and the system understands it, runs the right scenario, executes scripts, and asks follow-up questions.</p>
+        <p>The support agent opens the chat, types a sentence, and the system understands it, runs the right scenario, executes scripts, and asks follow-up questions. Unknown queries get an AI-generated response.</p>
     </div>
 
     <!-- P2 - 1. Overview -->
@@ -1040,7 +1299,7 @@ check export limit</div>
             <div class="overview-box">
                 <div class="icon">&#x1F9E0;</div>
                 <h3>NLP Classifies</h3>
-                <p>Intent matched to<br>scenario (92% conf.)</p>
+                <p>Embedding + centroid<br>similarity + MLP</p>
             </div>
             <span class="arrow">&#x27A1;</span>
             <div class="overview-box">
@@ -1057,8 +1316,32 @@ check export limit</div>
             <span class="arrow">&#x27A1;</span>
             <div class="overview-box">
                 <div class="icon">&#x2753;</div>
-                <h3>Ask Next</h3>
-                <p>Follow-up question<br>branch on answer</p>
+                <h3>Ask / Loop</h3>
+                <p>Follow-up question<br>branch or goto</p>
+            </div>
+        </div>
+
+        <!-- Unknown query path -->
+        <div class="flow-container" style="margin-top: 15px;">
+            <div class="flow-title" style="font-size: 1rem; color: #9b59b6;">Unknown Query Path</div>
+            <div class="overview-diagram" style="margin: 10px 0 0 0;">
+                <div class="overview-box" style="border-color: #ff6b6b; min-width: 140px;">
+                    <div class="icon" style="font-size: 1.6rem;">&#x2753;</div>
+                    <h3>No Match</h3>
+                    <p>"hello how<br>are you"</p>
+                </div>
+                <span class="arrow">&#x27A1;</span>
+                <div class="overview-box" style="border-color: #9b59b6; min-width: 140px;">
+                    <div class="icon" style="font-size: 1.6rem;">&#x1F916;</div>
+                    <h3>LLM Fallback</h3>
+                    <p>Claude API generates<br>helpful response</p>
+                </div>
+                <span class="arrow">&#x27A1;</span>
+                <div class="overview-box" style="border-color: #4a3a8a; min-width: 140px;">
+                    <div class="icon" style="font-size: 1.6rem;">&#x1F4AC;</div>
+                    <h3>AI Response</h3>
+                    <p>User sees intelligent<br>answer in chat</p>
+                </div>
             </div>
         </div>
     </div>
@@ -1084,19 +1367,19 @@ check export limit</div>
 
                 <div class="flow-step action" style="border-color: #45aaf2;">
                     <h4>&#x1F9E0; NLP Intent Classification</h4>
-                    <p>Encode sentence &rarr; 384-dim vector &rarr; MLPClassifier &rarr; "export_limit" (confidence: 0.92)</p>
+                    <p>Encode sentence &rarr; 384-dim vector &rarr; Cosine similarity to centroids &rarr; MLPClassifier</p>
                 </div>
                 <div class="flow-arrow">&#x2B07;</div>
 
                 <div class="flow-step decision">
-                    <h4>Confidence Check</h4>
-                    <p>Is confidence &gt; 0.4 threshold?</p>
+                    <h4>OOD + Confidence Check</h4>
+                    <p>Cosine similarity &gt; 0.45? Then confidence &gt; 0.4?</p>
                 </div>
                 <div class="flow-arrow">&#x2B07;</div>
 
                 <div class="flow-branch">
                     <div class="flow-branch-arm">
-                        <span class="branch-label">&#x2705; Yes &mdash; Match Found</span>
+                        <span class="branch-label">&#x2705; Match Found</span>
                         <div class="flow-arrow">&#x2B07;</div>
                         <div class="flow-step action">
                             <h4>&#x2699; Activate Scenario</h4>
@@ -1124,12 +1407,12 @@ check export limit</div>
                                 <div class="flow-arrow">&#x2B07;</div>
                                 <div class="flow-step action">
                                     <h4>Step 3b: Run Update Script</h4>
-                                    <p>set_export_limit.py(new_limit=5000)<br>Display: { "status": "success" }</p>
+                                    <p>set_export_limit.py(new_limit=5000)</p>
                                 </div>
                                 <div class="flow-arrow">&#x2B07;</div>
-                                <div class="flow-step end">
-                                    <h4>&#x2705; Scenario Complete</h4>
-                                    <p>"Limit updated! Anything else?"</p>
+                                <div class="flow-step action" style="border-color: #9b59b6;">
+                                    <h4>Step 3c: Goto</h4>
+                                    <p>&rarr; ask_again (loop back to choice)</p>
                                 </div>
                             </div>
                             <div class="flow-branch-arm">
@@ -1143,11 +1426,16 @@ check export limit</div>
                         </div>
                     </div>
                     <div class="flow-branch-arm">
-                        <span class="branch-label">&#x274C; No Match</span>
+                        <span class="branch-label">&#x274C; No Match (OOD)</span>
                         <div class="flow-arrow">&#x2B07;</div>
-                        <div class="flow-step end" style="border-color: #ff6b6b;">
-                            <h4>Fallback</h4>
-                            <p>"I didn't understand. Could you rephrase?"</p>
+                        <div class="flow-step action" style="border-color: #9b59b6; background: linear-gradient(135deg, #1a1a3e, #2a1a4e);">
+                            <h4>&#x1F916; LLM Fallback (Claude API)</h4>
+                            <p>Send user query to Claude with context about available scenarios.<br>Generate a helpful AI response.</p>
+                        </div>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step end" style="border-color: #4a3a8a;">
+                            <h4>AI Response</h4>
+                            <p>Show intelligent response in a purple-tinted bubble</p>
                         </div>
                     </div>
                 </div>
@@ -1163,7 +1451,7 @@ check export limit</div>
             <span class="num">3</span>
             Intent Recognition (Runtime)
         </div>
-        <p class="section-subtitle">How the system understands each user message in real-time</p>
+        <p class="section-subtitle">How the system understands each user message with OOD detection</p>
 
         <div class="pipeline">
             <div class="pipeline-step">
@@ -1181,8 +1469,15 @@ check export limit</div>
             </div>
             <span class="pipe-arrow">&#x27A1;</span>
             <div class="pipeline-step">
+                <div class="pipe-box" style="border-color: #9b59b6;">
+                    <h4>OOD Gate</h4>
+                </div>
+                <p>Cosine similarity<br>to centroids &ge; 0.45</p>
+            </div>
+            <span class="pipe-arrow">&#x27A1;</span>
+            <div class="pipeline-step">
                 <div class="pipe-box" style="border-color: #ff9f43;">
-                    <h4>Predict</h4>
+                    <h4>MLP Predict</h4>
                 </div>
                 <p>MLPClassifier outputs<br>probability per scenario</p>
             </div>
@@ -1195,7 +1490,31 @@ check export limit</div>
             </div>
         </div>
 
-        <div class="arch-card" style="margin-top: 15px;">
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Two-Stage Classification</h3>
+                <ul>
+                    <li><span class="bullet"><span class="step-num">1</span></span> <strong>OOD Gate:</strong> Cosine similarity between input embedding and per-class centroids</li>
+                    <li><span class="bullet"><span class="step-num">2</span></span> If max similarity &lt; 0.45 &rarr; <strong>UNKNOWN</strong> (skip MLP entirely)</li>
+                    <li><span class="bullet"><span class="step-num">3</span></span> <strong>MLP Predict:</strong> MLPClassifier outputs probability distribution over scenarios</li>
+                    <li><span class="bullet"><span class="step-num">4</span></span> If max probability &lt; 0.4 &rarr; <strong>UNKNOWN</strong></li>
+                    <li><span class="bullet"><span class="step-num">5</span></span> Otherwise &rarr; return matched scenario ID + confidence</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Example Predictions</h3>
+                <ul>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "what is the export limit" &rarr; <strong>export_limit</strong> (1.000)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "battery charge level" &rarr; <strong>what_is_soc_of_battery</strong> (1.000)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "check user account" &rarr; <strong>user_account_status</strong> (0.977)</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "hello how are you" &rarr; <strong>UNKNOWN</strong> (sim: 0.171)</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "what is the weather" &rarr; <strong>UNKNOWN</strong> (sim: 0.082)</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "tell me a joke" &rarr; <strong>UNKNOWN</strong> (sim: 0.077)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-card full-width" style="margin-top: 0;">
             <h3>Session State Machine</h3>
             <ul>
                 <li><span class="bullet" style="color: #45aaf2;">&#x25CF;</span> <strong>IDLE</strong> &mdash; Waiting for user input, no active scenario. NLP classifies next message.</li>
@@ -1208,14 +1527,99 @@ check export limit</div>
 
     <hr class="divider">
 
-    <!-- P2 - 4. Chat Interface -->
-    <div class="section" id="p2-chat-ui">
+    <!-- P2 - 4. AI Fallback -->
+    <div class="section" id="p2-fallback">
         <div class="section-title">
             <span class="num">4</span>
+            AI Fallback (LLM)
+        </div>
+        <p class="section-subtitle">When no scenario matches, Claude provides an intelligent response</p>
+
+        <div class="flow-container">
+            <div class="flow-title">LLM Fallback Flow</div>
+            <div class="flow-steps">
+                <div class="flow-step" style="border-color: #ff6b6b;">
+                    <h4>Classifier returns UNKNOWN</h4>
+                    <p>Cosine similarity below 0.45 &mdash; input is out-of-distribution</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step decision">
+                    <h4>ANTHROPIC_API_KEY set?</h4>
+                    <p>Check environment variable</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-branch">
+                    <div class="flow-branch-arm">
+                        <span class="branch-label">&#x2705; Yes &mdash; API Key Found</span>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step action" style="border-color: #9b59b6; background: linear-gradient(135deg, #1a1a3e, #2a1a4e);">
+                            <h4>&#x1F916; Call Claude API</h4>
+                            <p>System prompt: "You are a helpful assistant in SmartChat..."<br>
+                            Context: list of available scenario topics<br>
+                            User message forwarded to Claude</p>
+                        </div>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step end" style="border-color: #4a3a8a;">
+                            <h4>Send AI Response</h4>
+                            <p>type: "ai_response" &mdash; purple-tinted bubble in chat</p>
+                        </div>
+                    </div>
+                    <div class="flow-branch-arm">
+                        <span class="branch-label">&#x274C; No API Key</span>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step end" style="border-color: #ff6b6b;">
+                            <h4>Error Fallback</h4>
+                            <p>"I didn't understand that. Could you rephrase?"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>LLM Fallback System Prompt</h3>
+                <div class="code-block" style="margin: 10px 0 0 0;">
+<pre>
+<span class="code-str">"You are a helpful assistant in a support
+chatbot called SmartChat. The user asked
+something that didn't match any predefined
+scenario. Provide a brief, helpful response.
+If you don't know the specific answer, be
+honest and suggest how the user might find
+the information.
+
+The chatbot supports these specific topics:
+<span class="code-val">{scenario_names}</span>. If the user's question
+is close to one of these, suggest they
+rephrase."</span>
+</pre>
+                </div>
+            </div>
+            <div class="arch-card">
+                <h3>Key Design Decisions</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Graceful degradation:</strong> No API key? Falls back to static error message</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Context-aware:</strong> Claude knows which scenarios exist, can suggest rephrasing</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Non-blocking:</strong> Failure in LLM call silently falls back to error message</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Distinct UI:</strong> AI responses have a unique purple-tinted bubble style</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>No session:</strong> AI responses don't start a scenario &mdash; user stays in IDLE state</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P2 - 5. Chat Interface -->
+    <div class="section" id="p2-chat-ui">
+        <div class="section-title">
+            <span class="num">5</span>
             Chat Interface
         </div>
         <p class="section-subtitle">What the support agent sees and interacts with</p>
 
+        <!-- Scenario Chat Mockup -->
         <div class="chat-mockup">
             <div class="chat-header-mock">
                 <div class="dot"></div>
@@ -1235,7 +1639,26 @@ check export limit</div>
                 <div class="msg system">What should the new export limit be?</div>
                 <div class="msg user">5000</div>
                 <div class="msg result">{ "status": "success", "new_export_limit": 5000 }</div>
-                <div class="msg system">Export limit updated! Is there anything else?</div>
+                <div class="msg system">Export limit updated! Would you like to change it?</div>
+            </div>
+            <div class="chat-input-mock">
+                <input type="text" placeholder="Type your message..." disabled>
+                <button>&#x27A4;</button>
+            </div>
+        </div>
+
+        <!-- AI Fallback Chat Mockup -->
+        <p style="text-align: center; color: #8080b0; margin: 20px 0 5px; font-size: 0.85rem;">Unknown query &rarr; AI Fallback Response</p>
+        <div class="chat-mockup">
+            <div class="chat-header-mock">
+                <div class="dot"></div>
+                <span>SmartChat</span>
+                <span style="color: #8080b0; font-size: 0.8rem; margin-left: auto;">Connected</span>
+            </div>
+            <div class="chat-messages" style="min-height: 160px;">
+                <div class="msg system">Welcome! How can I help you today?</div>
+                <div class="msg user">What's the weather like today?</div>
+                <div class="msg ai">I don't have access to weather information, but I can help you with topics like checking export limits, battery state of charge, or user account status. Could you try asking about one of those?</div>
             </div>
             <div class="chat-input-mock">
                 <input type="text" placeholder="Type your message..." disabled>
@@ -1251,7 +1674,7 @@ check export limit</div>
             </div>
             <div class="component-card">
                 <h4>MessageBubble</h4>
-                <p>Renders user, system, script result, error messages</p>
+                <p>Renders user, system, script result, AI, and error messages</p>
                 <span class="tag">Display</span>
             </div>
             <div class="component-card">
@@ -1275,14 +1698,29 @@ check export limit</div>
                 <span class="tag">Feedback</span>
             </div>
         </div>
+
+        <div class="arch-card full-width" style="margin-top: 20px;">
+            <h3>Message Bubble Types</h3>
+            <ul>
+                <li><span class="bullet" style="color: #6c63ff;">&#x25CF;</span> <strong>user</strong> &mdash; Purple bubble, right-aligned (user typed message)</li>
+                <li><span class="bullet" style="color: #a0a0c0;">&#x25CF;</span> <strong>system / text</strong> &mdash; Dark bubble, left-aligned (system messages)</li>
+                <li><span class="bullet" style="color: #2ed573;">&#x25CF;</span> <strong>script_result</strong> &mdash; Green terminal card (JSON formatted as table)</li>
+                <li><span class="bullet" style="color: #ff9f43;">&#x25CF;</span> <strong>question</strong> &mdash; System bubble + quick reply buttons below</li>
+                <li><span class="bullet" style="color: #45aaf2;">&#x25CF;</span> <strong>input_request</strong> &mdash; System bubble prompting free text input</li>
+                <li><span class="bullet" style="color: #a0b0ff;">&#x25CF;</span> <strong>scenario_start</strong> &mdash; Gradient blue bubble announcing scenario activation</li>
+                <li><span class="bullet" style="color: #7ee0a0;">&#x25CF;</span> <strong>scenario_end</strong> &mdash; Gradient green bubble marking completion</li>
+                <li><span class="bullet" style="color: #c0c0f0;">&#x25CF;</span> <strong>ai_response</strong> &mdash; Purple-tinted bubble for LLM fallback responses</li>
+                <li><span class="bullet" style="color: #ff8080;">&#x25CF;</span> <strong>error</strong> &mdash; Red-tinted bubble for error messages</li>
+            </ul>
+        </div>
     </div>
 
     <hr class="divider">
 
-    <!-- P2 - 5. API & WebSocket -->
+    <!-- P2 - 6. API & WebSocket -->
     <div class="section" id="p2-api">
         <div class="section-title">
-            <span class="num">5</span>
+            <span class="num">6</span>
             API &amp; WebSocket Protocol
         </div>
         <p class="section-subtitle">How the frontend and backend communicate</p>
@@ -1311,23 +1749,33 @@ check export limit</div>
                     </tr>
                     <tr>
                         <td><span class="method-get">GET</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/scenarios/scripts</td>
+                        <td style="color: #a0a0c0;">List available Python scripts</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-post">POST</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/scenarios/create</td>
+                        <td style="color: #a0a0c0;">Create/update scenario (writes YAML)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-post">POST</span></td>
+                        <td style="font-family: monospace; color: #45aaf2;">/api/scenarios/reload</td>
+                        <td style="color: #a0a0c0;">Reload YAML files into registry</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method-get">GET</span></td>
                         <td style="font-family: monospace; color: #45aaf2;">/api/scenarios/{id}</td>
                         <td style="color: #a0a0c0;">Get scenario details</td>
                     </tr>
                     <tr>
                         <td><span class="method-post">POST</span></td>
-                        <td style="font-family: monospace; color: #45aaf2;">/api/scenarios/reload</td>
-                        <td style="color: #a0a0c0;">Reload YAML files</td>
-                    </tr>
-                    <tr>
-                        <td><span class="method-post">POST</span></td>
                         <td style="font-family: monospace; color: #45aaf2;">/api/training/train</td>
-                        <td style="color: #a0a0c0;">Augment + retrain model</td>
+                        <td style="color: #a0a0c0;">Augment + train model + compute centroids</td>
                     </tr>
                     <tr>
                         <td><span class="method-get">GET</span></td>
                         <td style="font-family: monospace; color: #45aaf2;">/api/training/status</td>
-                        <td style="color: #a0a0c0;">Model training status</td>
+                        <td style="color: #a0a0c0;">Model training status &amp; metadata</td>
                     </tr>
                 </tbody>
             </table>
@@ -1357,8 +1805,8 @@ check export limit</div>
                 <h3>WebSocket: Server &rarr; Client</h3>
                 <div class="code-block" style="margin: 10px 0 0 0;">
 <pre>
-<span class="code-comment">// Text message</span>
-{ <span class="code-key">"type"</span>: <span class="code-str">"text"</span>,
+<span class="code-comment">// Scenario start</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"scenario_start"</span>,
   <span class="code-key">"content"</span>: <span class="code-str">"Starting: Export Limit"</span> }
 
 <span class="code-comment">// Script result</span>
@@ -1369,12 +1817,20 @@ check export limit</div>
 <span class="code-comment">// Choice question</span>
 { <span class="code-key">"type"</span>: <span class="code-str">"question"</span>,
   <span class="code-key">"content"</span>: <span class="code-str">"Change it?"</span>,
-  <span class="code-key">"options"</span>: [<span class="code-str">"Yes"</span>, <span class="code-str">"No"</span>] }
+  <span class="code-key">"options"</span>: [{<span class="code-str">"label"</span>:<span class="code-str">"Yes"</span>,<span class="code-str">"value"</span>:<span class="code-str">"yes"</span>}] }
 
 <span class="code-comment">// Input request</span>
 { <span class="code-key">"type"</span>: <span class="code-str">"input_request"</span>,
   <span class="code-key">"content"</span>: <span class="code-str">"New limit?"</span>,
   <span class="code-key">"input_key"</span>: <span class="code-str">"new_limit"</span> }
+
+<span class="code-comment">// AI fallback response (unknown query)</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"ai_response"</span>,
+  <span class="code-key">"content"</span>: <span class="code-str">"I can help with..."</span> }
+
+<span class="code-comment">// Scenario end</span>
+{ <span class="code-key">"type"</span>: <span class="code-str">"scenario_end"</span>,
+  <span class="code-key">"content"</span>: <span class="code-str">"No changes made."</span> }
 </pre>
                 </div>
             </div>
@@ -1383,10 +1839,10 @@ check export limit</div>
 
     <hr class="divider">
 
-    <!-- P2 - 6. Architecture -->
+    <!-- P2 - 7. Architecture -->
     <div class="section" id="p2-architecture">
         <div class="section-title">
-            <span class="num">6</span>
+            <span class="num">7</span>
             System Architecture
         </div>
         <p class="section-subtitle">Backend and frontend component breakdown</p>
@@ -1395,31 +1851,34 @@ check export limit</div>
             <div class="arch-card">
                 <h3>Backend (FastAPI / Python)</h3>
                 <ul>
-                    <li><span class="bullet">&#x25B6;</span> <strong>main.py</strong> &mdash; App entry, CORS, startup/shutdown</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>main.py</strong> &mdash; App entry, CORS, startup/shutdown, global instances</li>
                     <li><span class="bullet">&#x25B6;</span> <strong>api/chat.py</strong> &mdash; WebSocket chat endpoint</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>api/scenarios.py</strong> &mdash; REST: list, get, reload</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>api/scenarios.py</strong> &mdash; REST: list, get, create, reload, scripts</li>
                     <li><span class="bullet">&#x25B6;</span> <strong>api/training.py</strong> &mdash; REST: train, status</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>core/flow_engine.py</strong> &mdash; Scenario state machine</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>core/script_executor.py</strong> &mdash; Sandboxed runner</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>core/scenario_loader.py</strong> &mdash; Parse YAML</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>core/session_manager.py</strong> &mdash; Session tracking</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/augmenter.py</strong> &mdash; Claude API augmentation</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/embedder.py</strong> &mdash; SentenceTransformer</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/trainer.py</strong> &mdash; Train MLPClassifier</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/intent_classifier.py</strong> &mdash; Predict intent</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>core/flow_engine.py</strong> &mdash; Scenario state machine + LLM fallback</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>core/script_executor.py</strong> &mdash; Sandboxed Python runner</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>core/scenario_registry.py</strong> &mdash; Parse &amp; store YAML scenarios</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>core/session_manager.py</strong> &mdash; Session tracking per user</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/augmenter.py</strong> &mdash; Claude API phrase augmentation</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/embedder.py</strong> &mdash; SentenceTransformer (384-dim)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/trainer.py</strong> &mdash; Train MLPClassifier + compute centroids</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/intent_classifier.py</strong> &mdash; OOD detection + MLP prediction</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>nlp/llm_fallback.py</strong> &mdash; Claude API fallback for unknown queries</li>
                 </ul>
             </div>
             <div class="arch-card">
-                <h3>Frontend (React / TypeScript)</h3>
+                <h3>Frontend (React / TypeScript / Vite)</h3>
                 <ul>
-                    <li><span class="bullet">&#x25B6;</span> <strong>ChatContainer</strong> &mdash; Main orchestrator</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>MessageList</strong> &mdash; Scrollable messages</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>MessageBubble</strong> &mdash; Message display</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>ChatContainer</strong> &mdash; Main chat orchestrator</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>MessageBubble</strong> &mdash; 9 bubble types (user, system, ai_response, error...)</li>
                     <li><span class="bullet">&#x25B6;</span> <strong>QuickReplyButtons</strong> &mdash; Choice buttons</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>ScriptResultCard</strong> &mdash; Script output</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>useWebSocket</strong> &mdash; WS + reconnect</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>useChatSession</strong> &mdash; Message state</li>
-                    <li><span class="bullet">&#x25B6;</span> <strong>Sidebar</strong> &mdash; Scenario list</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>ScriptResultCard</strong> &mdash; JSON output as formatted table</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>useWebSocket</strong> &mdash; WebSocket + auto-reconnect</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>useChatSession</strong> &mdash; Message state management</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>ScenarioBuilder</strong> &mdash; Scenario list + flow editor</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>FlowEditor</strong> &mdash; ReactFlow canvas + config panel</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>6 Node Components</strong> &mdash; Start, Script, Choice, Input, Goto, End</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>DraggableEdge</strong> &mdash; Custom edges with bend points</li>
                 </ul>
             </div>
         </div>
@@ -1431,7 +1890,7 @@ check export limit</div>
                 <div style="text-align: center;">
                     <div style="background: #1a2a4e; border: 2px solid #45aaf2; border-radius: 12px; padding: 18px 22px;">
                         <strong style="color: #45aaf2;">React Frontend</strong><br>
-                        <span style="color: #8080b0; font-size: 0.78rem;">Port 3000</span>
+                        <span style="color: #8080b0; font-size: 0.78rem;">Vite &mdash; Port 5173</span>
                     </div>
                 </div>
                 <div style="text-align: center;">
@@ -1442,7 +1901,7 @@ check export limit</div>
                 <div style="text-align: center;">
                     <div style="background: #2a1a4e; border: 2px solid #6c63ff; border-radius: 12px; padding: 18px 22px;">
                         <strong style="color: #6c63ff;">FastAPI Backend</strong><br>
-                        <span style="color: #8080b0; font-size: 0.78rem;">Port 8000</span>
+                        <span style="color: #8080b0; font-size: 0.78rem;">uvicorn &mdash; Port 8000</span>
                     </div>
                 </div>
                 <div style="text-align: center;">
@@ -1451,8 +1910,753 @@ check export limit</div>
                 <div style="text-align: center;">
                     <div style="background: #1a3a2e; border: 2px solid #2ed573; border-radius: 12px; padding: 18px 22px;">
                         <strong style="color: #2ed573;">Python Scripts</strong><br>
-                        <span style="color: #8080b0; font-size: 0.78rem;">Subprocess</span>
+                        <span style="color: #8080b0; font-size: 0.78rem;">Subprocess (sandboxed)</span>
                     </div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="color: #8080b0; font-size: 1.4rem;">&#x27A1;</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="background: #2a1a3e; border: 2px solid #9b59b6; border-radius: 12px; padding: 18px 22px;">
+                        <strong style="color: #9b59b6;">Claude API</strong><br>
+                        <span style="color: #8080b0; font-size: 0.78rem;">Augmentation + Fallback</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Directory Structure -->
+        <div class="arch-card full-width" style="margin-top: 20px;">
+            <h3>Project Directory Structure</h3>
+            <div class="code-block" style="margin: 10px 0 0 0;">
+<pre>
+SmartChat/
+<span class="code-key">backend/</span>
+  <span class="code-key">app/</span>
+    <span class="code-val">main.py</span>                    <span class="code-comment"># FastAPI app, lifespan, global instances</span>
+    <span class="code-val">config.py</span>                  <span class="code-comment"># Paths, thresholds, settings</span>
+    <span class="code-key">api/</span>
+      <span class="code-val">chat.py</span>                  <span class="code-comment"># WebSocket /api/chat/{session_id}</span>
+      <span class="code-val">scenarios.py</span>             <span class="code-comment"># REST CRUD for scenarios</span>
+      <span class="code-val">training.py</span>              <span class="code-comment"># POST /api/training/train</span>
+    <span class="code-key">core/</span>
+      <span class="code-val">flow_engine.py</span>           <span class="code-comment"># Scenario state machine + goto + LLM fallback</span>
+      <span class="code-val">script_executor.py</span>       <span class="code-comment"># Sandboxed subprocess runner</span>
+      <span class="code-val">scenario_registry.py</span>     <span class="code-comment"># YAML loader + in-memory store</span>
+      <span class="code-val">session_manager.py</span>       <span class="code-comment"># Per-user session tracking</span>
+    <span class="code-key">nlp/</span>
+      <span class="code-val">embedder.py</span>              <span class="code-comment"># SentenceTransformer wrapper</span>
+      <span class="code-val">augmenter.py</span>             <span class="code-comment"># Claude API data augmentation</span>
+      <span class="code-val">trainer.py</span>               <span class="code-comment"># MLPClassifier + centroid computation</span>
+      <span class="code-val">intent_classifier.py</span>     <span class="code-comment"># OOD gate + MLP prediction</span>
+      <span class="code-val">llm_fallback.py</span>          <span class="code-comment"># Claude API fallback for unknown queries</span>
+    <span class="code-key">models/</span>
+      <span class="code-val">scenario.py</span>              <span class="code-comment"># Pydantic: Scenario, Step, ChoiceOption</span>
+      <span class="code-val">session.py</span>               <span class="code-comment"># ChatSession, SessionState enum</span>
+      <span class="code-val">messages.py</span>              <span class="code-comment"># ResponseMessage (9 types)</span>
+  <span class="code-key">scenarios/</span>                     <span class="code-comment"># *.yaml scenario definitions</span>
+  <span class="code-key">scripts/</span>                       <span class="code-comment"># *.py executable scripts</span>
+  <span class="code-key">trained_models/</span>                <span class="code-comment"># .joblib + centroids.npy + metadata</span>
+  <span class="code-key">augmented_data/</span>                <span class="code-comment"># Cached augmented phrases (.json)</span>
+
+<span class="code-key">frontend/</span>
+  <span class="code-key">src/</span>
+    <span class="code-key">components/</span>
+      <span class="code-key">Chat/</span>                    <span class="code-comment"># ChatContainer, MessageBubble, QuickReply...</span>
+      <span class="code-key">ScenarioBuilder/</span>         <span class="code-comment"># Visual flow editor</span>
+        <span class="code-val">FlowEditor.tsx</span>         <span class="code-comment"># Main orchestrator</span>
+        <span class="code-val">FlowCanvas.tsx</span>         <span class="code-comment"># ReactFlow canvas</span>
+        <span class="code-val">NodeConfigPanel.tsx</span>    <span class="code-comment"># Right sidebar config</span>
+        <span class="code-key">nodes/</span>                 <span class="code-comment"># 6 node components + nodeTypes.ts</span>
+        <span class="code-key">edges/</span>                 <span class="code-comment"># DraggableEdge with bend points</span>
+        <span class="code-key">utils/</span>                 <span class="code-comment"># stepsToFlow, flowToSteps, autoLayout</span>
+    <span class="code-key">hooks/</span>                     <span class="code-comment"># useWebSocket, useChatSession, useScenarios</span>
+    <span class="code-key">types/</span>                     <span class="code-comment"># chat.ts, flowTypes.ts, scenario.ts, websocket.ts</span>
+</pre>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 3: AI & NEURAL NETWORK DEEP DIVE                         -->
+<!-- ============================================================ -->
+<div id="page3" class="page">
+
+    <div class="sub-nav">
+        <a href="#p3-why-ai">Why AI?</a>
+        <a href="#p3-embeddings">Sentence Embeddings</a>
+        <a href="#p3-neural-network">Neural Network</a>
+        <a href="#p3-ood">OOD Detection</a>
+        <a href="#p3-selection">Selection Pipeline</a>
+        <a href="#p3-llm-fallback">LLM Fallback</a>
+        <a href="#p3-design-decisions">Design Decisions</a>
+    </div>
+
+    <div class="page-banner">
+        <div class="icon">&#x1F9E0;</div>
+        <h2>Page 3: AI &amp; Neural Network Deep Dive</h2>
+        <p>How SmartChat understands natural language, classifies intent, detects unknown queries, and falls back to a large language model when no scenario matches.</p>
+    </div>
+
+    <!-- P3 - 1. Why AI? -->
+    <div class="section" id="p3-why-ai">
+        <div class="section-title">
+            <span class="num">1</span>
+            Why AI for Intent Classification?
+        </div>
+        <p class="section-subtitle">The problem: users don't type exact keywords &mdash; they speak naturally</p>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>The Problem with Keyword Matching</h3>
+                <ul>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "export limit" &rarr; matches keyword "export limit"</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "what is the export cap" &rarr; <strong>no match</strong> (different word)</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "how many can I export" &rarr; <strong>no match</strong> (rephrased)</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "EKSPORT LIMIT?" &rarr; <strong>no match</strong> (typo + caps)</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "show me the export restriction" &rarr; <strong>no match</strong> (synonym)</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>The AI Solution</h3>
+                <ul>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "export limit" &rarr; export_limit (1.000)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "what is the export cap" &rarr; export_limit (0.998)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "how many can I export" &rarr; export_limit (0.972)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "EKSPORT LIMIT?" &rarr; export_limit (0.991)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "show me the export restriction" &rarr; export_limit (0.995)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-card full-width">
+            <h3>SmartChat's AI Architecture: Three Layers</h3>
+            <div class="pipeline" style="margin: 15px 0 0 0; border: none; padding: 0; background: transparent;">
+                <div class="pipeline-step" style="min-width: 200px;">
+                    <div class="pipe-box" style="border-color: #45aaf2;">
+                        <h4>Layer 1: Embeddings</h4>
+                    </div>
+                    <p>Convert text to<br>mathematical vectors<br>(SentenceTransformer)</p>
+                </div>
+                <span class="pipe-arrow">&#x27A1;</span>
+                <div class="pipeline-step" style="min-width: 200px;">
+                    <div class="pipe-box" style="border-color: #ff9f43;">
+                        <h4>Layer 2: Neural Network</h4>
+                    </div>
+                    <p>Classify vectors into<br>scenario categories<br>(MLPClassifier)</p>
+                </div>
+                <span class="pipe-arrow">&#x27A1;</span>
+                <div class="pipeline-step" style="min-width: 200px;">
+                    <div class="pipe-box" style="border-color: #9b59b6;">
+                        <h4>Layer 3: LLM Fallback</h4>
+                    </div>
+                    <p>Handle unknowns with<br>generative AI<br>(Claude API)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P3 - 2. Sentence Embeddings -->
+    <div class="section" id="p3-embeddings">
+        <div class="section-title">
+            <span class="num">2</span>
+            Sentence Embeddings
+        </div>
+        <p class="section-subtitle">How text becomes numbers that a neural network can understand</p>
+
+        <div class="flow-container">
+            <div class="flow-title">From Words to Vectors</div>
+            <div class="flow-steps">
+                <div class="flow-step start">
+                    <h4>&#x270D; Input Text</h4>
+                    <p>"What is the export limit?"</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action" style="border-color: #45aaf2;">
+                    <h4>Tokenizer</h4>
+                    <p>Split into sub-word tokens: ["what", "is", "the", "export", "limit", "?"]<br>
+                    Map each token to an integer ID from vocabulary</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action">
+                    <h4>Transformer Encoder (6 Layers)</h4>
+                    <p>Each token attends to every other token (self-attention).<br>
+                    "export" near "limit" produces different embedding than "export" near "goods".<br>
+                    Context determines meaning.</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action" style="border-color: #ff9f43;">
+                    <h4>Mean Pooling</h4>
+                    <p>Average all token vectors into a single sentence-level vector.<br>
+                    Result: one 384-dimensional vector that captures the full sentence meaning.</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step end">
+                    <h4>384-Dimensional Vector</h4>
+                    <p>[0.0342, -0.1281, 0.0893, ..., 0.0571] &mdash; 384 floating point numbers</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>What is all-MiniLM-L6-v2?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Pre-trained model</strong> from Hugging Face (22MB, lightweight)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>6 Transformer layers</strong> (L6) with 384 hidden dimensions</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Trained on 1 billion+ sentence pairs</strong> for semantic similarity</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Key property:</strong> Similar sentences &rarr; similar vectors (close in space)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Runs on CPU</strong> in ~5ms per sentence (no GPU needed)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Vocabulary:</strong> 30,522 sub-word tokens (WordPiece tokenizer)</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Why Embeddings Work</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Semantic space:</strong> Words with similar meaning are nearby</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>"export limit"</strong> and <strong>"export cap"</strong> &rarr; vectors are very close (cosine &asymp; 0.95)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>"export limit"</strong> and <strong>"battery charge"</strong> &rarr; vectors are far apart (cosine &asymp; 0.15)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Typo-resistant:</strong> Sub-word tokenization handles "eksport" &rarr; "eks" + "port"</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Case-insensitive:</strong> Model normalizes internally</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Language understanding:</strong> "how many can I export" maps near "export limit"</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-card full-width">
+            <h3>Cosine Similarity &mdash; Measuring Closeness</h3>
+            <p style="color: #a0a0c0; margin-bottom: 15px; font-size: 0.9rem;">
+                Cosine similarity measures the angle between two vectors. It ranges from -1 (opposite) to 1 (identical direction).
+                In embedding space, semantically similar sentences have cosine similarity close to 1.0.
+            </p>
+            <div class="code-block">
+<pre>
+<span class="code-comment"># How cosine similarity works:</span>
+<span class="code-comment">#                    A &middot; B          (dot product of vectors)</span>
+<span class="code-comment"># cos(A, B) = ───────────────────</span>
+<span class="code-comment">#              ||A|| &times; ||B||       (product of magnitudes)</span>
+
+<span class="code-key">Example embeddings</span> (simplified to 4 dimensions):
+
+<span class="code-str">"export limit"</span>     &rarr;  [<span class="code-val">0.8</span>, <span class="code-val">0.3</span>, <span class="code-val">0.1</span>, <span class="code-val">0.2</span>]
+<span class="code-str">"export cap"</span>       &rarr;  [<span class="code-val">0.79</span>, <span class="code-val">0.31</span>, <span class="code-val">0.09</span>, <span class="code-val">0.22</span>]   cosine = <span class="code-val">0.998</span>  <span class="code-comment"># Nearly identical meaning</span>
+<span class="code-str">"battery charge"</span>   &rarr;  [<span class="code-val">0.1</span>, <span class="code-val">0.2</span>, <span class="code-val">0.9</span>, <span class="code-val">0.1</span>]    cosine = <span class="code-val">0.312</span>  <span class="code-comment"># Very different meaning</span>
+<span class="code-str">"hello world"</span>      &rarr;  [<span class="code-val">0.4</span>, <span class="code-val">0.5</span>, <span class="code-val">0.3</span>, <span class="code-val">0.6</span>]    cosine = <span class="code-val">0.171</span>  <span class="code-comment"># Unrelated &mdash; OOD detected</span>
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P3 - 3. Neural Network -->
+    <div class="section" id="p3-neural-network">
+        <div class="section-title">
+            <span class="num">3</span>
+            Neural Network Architecture
+        </div>
+        <p class="section-subtitle">How the MLPClassifier learns to map embeddings to scenario intents</p>
+
+        <div class="flow-container">
+            <div class="flow-title">MLPClassifier Architecture: (384) &rarr; (256) &rarr; (128) &rarr; (64) &rarr; (N scenarios)</div>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 0;">
+                <!-- Input Layer -->
+                <div style="text-align: center;">
+                    <div style="background: #1a2a4e; border: 2px solid #45aaf2; border-radius: 12px; padding: 16px 14px; min-width: 90px;">
+                        <div style="color: #45aaf2; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Input</div>
+                        <div style="color: #fff; font-size: 1.4rem; font-weight: bold; margin: 4px 0;">384</div>
+                        <div style="color: #8080b0; font-size: 0.65rem;">neurons</div>
+                    </div>
+                    <div style="color: #8080b0; font-size: 0.68rem; margin-top: 4px;">Embedding<br>vector</div>
+                </div>
+                <div style="color: #6c63ff; font-size: 1.2rem;">&#x27A1;</div>
+                <!-- Hidden 1 -->
+                <div style="text-align: center;">
+                    <div style="background: #2a1a4e; border: 2px solid #6c63ff; border-radius: 12px; padding: 16px 14px; min-width: 90px;">
+                        <div style="color: #6c63ff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Hidden 1</div>
+                        <div style="color: #fff; font-size: 1.4rem; font-weight: bold; margin: 4px 0;">256</div>
+                        <div style="color: #8080b0; font-size: 0.65rem;">neurons</div>
+                    </div>
+                    <div style="color: #8080b0; font-size: 0.68rem; margin-top: 4px;">ReLU<br>activation</div>
+                </div>
+                <div style="color: #6c63ff; font-size: 1.2rem;">&#x27A1;</div>
+                <!-- Hidden 2 -->
+                <div style="text-align: center;">
+                    <div style="background: #2a1a4e; border: 2px solid #6c63ff; border-radius: 12px; padding: 16px 14px; min-width: 90px;">
+                        <div style="color: #6c63ff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Hidden 2</div>
+                        <div style="color: #fff; font-size: 1.4rem; font-weight: bold; margin: 4px 0;">128</div>
+                        <div style="color: #8080b0; font-size: 0.65rem;">neurons</div>
+                    </div>
+                    <div style="color: #8080b0; font-size: 0.68rem; margin-top: 4px;">ReLU<br>activation</div>
+                </div>
+                <div style="color: #6c63ff; font-size: 1.2rem;">&#x27A1;</div>
+                <!-- Hidden 3 -->
+                <div style="text-align: center;">
+                    <div style="background: #2a1a4e; border: 2px solid #6c63ff; border-radius: 12px; padding: 16px 14px; min-width: 90px;">
+                        <div style="color: #6c63ff; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Hidden 3</div>
+                        <div style="color: #fff; font-size: 1.4rem; font-weight: bold; margin: 4px 0;">64</div>
+                        <div style="color: #8080b0; font-size: 0.65rem;">neurons</div>
+                    </div>
+                    <div style="color: #8080b0; font-size: 0.68rem; margin-top: 4px;">ReLU<br>activation</div>
+                </div>
+                <div style="color: #6c63ff; font-size: 1.2rem;">&#x27A1;</div>
+                <!-- Output -->
+                <div style="text-align: center;">
+                    <div style="background: #1a3a2e; border: 2px solid #2ed573; border-radius: 12px; padding: 16px 14px; min-width: 90px;">
+                        <div style="color: #2ed573; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Output</div>
+                        <div style="color: #fff; font-size: 1.4rem; font-weight: bold; margin: 4px 0;">N</div>
+                        <div style="color: #8080b0; font-size: 0.65rem;">scenarios</div>
+                    </div>
+                    <div style="color: #8080b0; font-size: 0.68rem; margin-top: 4px;">Softmax<br>probabilities</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>What is an MLP (Multi-Layer Perceptron)?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Feedforward neural network:</strong> data flows in one direction (input &rarr; output)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Fully connected:</strong> every neuron connects to every neuron in the next layer</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Total parameters:</strong> 384&times;256 + 256&times;128 + 128&times;64 + 64&times;N + biases &asymp; <strong>140K weights</strong></li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Each neuron computes:</strong> output = ReLU(W &middot; input + bias)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Learning:</strong> Backpropagation adjusts weights to minimize classification error</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Key Components Explained</h3>
+                <ul>
+                    <li><span class="bullet" style="color: #45aaf2;">&#x25CF;</span> <strong>ReLU Activation:</strong> f(x) = max(0, x). Introduces non-linearity &mdash; allows the network to learn complex decision boundaries, not just straight lines</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x25CF;</span> <strong>Softmax Output:</strong> Converts final layer scores into probabilities that sum to 1.0. Highest probability = predicted scenario</li>
+                    <li><span class="bullet" style="color: #ff9f43;">&#x25CF;</span> <strong>Early Stopping:</strong> Monitor validation loss during training; stop when it starts increasing to prevent overfitting</li>
+                    <li><span class="bullet" style="color: #6c63ff;">&#x25CF;</span> <strong>Validation Split:</strong> 15% of data held out during training to detect overfitting</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-card full-width">
+            <h3>How Training Works (Step by Step)</h3>
+            <div class="flow-container" style="margin: 15px 0 0 0; border: none; padding: 0; background: transparent;">
+                <div class="flow-steps">
+                    <div class="flow-step start">
+                        <h4>Step 1: Prepare Training Data</h4>
+                        <p>10,000+ phrases per scenario, each labeled with its scenario_id.<br>
+                        Example: ("what is the export limit", "export_limit")</p>
+                    </div>
+                    <div class="flow-arrow">&#x2B07;</div>
+                    <div class="flow-step action" style="border-color: #45aaf2;">
+                        <h4>Step 2: Encode All Phrases</h4>
+                        <p>SentenceTransformer converts each phrase to a 384-dim vector.<br>
+                        30,000 phrases &rarr; matrix of shape [30000, 384]</p>
+                    </div>
+                    <div class="flow-arrow">&#x2B07;</div>
+                    <div class="flow-step action">
+                        <h4>Step 3: Forward Pass</h4>
+                        <p>Feed each embedding through the network. Compare predicted probabilities to the true label.<br>
+                        Calculate loss (cross-entropy): how wrong was the prediction?</p>
+                    </div>
+                    <div class="flow-arrow">&#x2B07;</div>
+                    <div class="flow-step action" style="border-color: #ff9f43;">
+                        <h4>Step 4: Backpropagation</h4>
+                        <p>Compute gradients: how should each weight change to reduce the error?<br>
+                        Update weights using Adam optimizer (adaptive learning rate).</p>
+                    </div>
+                    <div class="flow-arrow">&#x2B07;</div>
+                    <div class="flow-step action" style="border-color: #9b59b6;">
+                        <h4>Step 5: Repeat (up to 500 epochs)</h4>
+                        <p>Each epoch = one pass through all training data.<br>
+                        Early stopping: if validation accuracy doesn't improve for 10 epochs, stop.</p>
+                    </div>
+                    <div class="flow-arrow">&#x2B07;</div>
+                    <div class="flow-step end">
+                        <h4>Step 6: Save Model + Centroids</h4>
+                        <p>Save trained weights to intent_classifier.joblib.<br>
+                        Compute mean embedding per class &rarr; centroids.npy for OOD detection.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training code -->
+        <div class="arch-card full-width" style="margin-top: 25px;">
+            <h3>Training Configuration (scikit-learn)</h3>
+            <div class="code-block" style="margin: 10px 0 0 0;">
+                <span class="lang-label">Python</span>
+<pre>
+<span class="code-key">from</span> sklearn.neural_network <span class="code-key">import</span> MLPClassifier
+
+clf = MLPClassifier(
+    <span class="code-key">hidden_layer_sizes</span>=(<span class="code-val">256</span>, <span class="code-val">128</span>, <span class="code-val">64</span>),   <span class="code-comment"># 3 hidden layers</span>
+    <span class="code-key">activation</span>=<span class="code-str">"relu"</span>,                    <span class="code-comment"># ReLU activation function</span>
+    <span class="code-key">max_iter</span>=<span class="code-val">500</span>,                         <span class="code-comment"># Maximum training epochs</span>
+    <span class="code-key">early_stopping</span>=<span class="code-val">True</span>,                  <span class="code-comment"># Stop when validation plateaus</span>
+    <span class="code-key">validation_fraction</span>=<span class="code-val">0.15</span>,            <span class="code-comment"># 15% held out for validation</span>
+    <span class="code-key">random_state</span>=<span class="code-val">42</span>,                      <span class="code-comment"># Reproducible results</span>
+)
+
+<span class="code-comment"># Train: embeddings = [30000, 384], labels = [30000]</span>
+clf.fit(embeddings, encoded_labels)
+
+<span class="code-comment"># After training, compute per-class centroids for OOD detection</span>
+<span class="code-key">for</span> label <span class="code-key">in</span> unique_labels:
+    mask = labels == label
+    centroids[label] = embeddings[mask].mean(axis=<span class="code-val">0</span>)  <span class="code-comment"># Average embedding per class</span>
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P3 - 4. OOD Detection -->
+    <div class="section" id="p3-ood">
+        <div class="section-title">
+            <span class="num">4</span>
+            Out-of-Distribution (OOD) Detection
+        </div>
+        <p class="section-subtitle">How SmartChat knows when a query doesn't match ANY scenario</p>
+
+        <div class="arch-card full-width" style="margin-bottom: 25px;">
+            <h3>The Problem: Softmax Always Picks Something</h3>
+            <p style="color: #a0a0c0; margin-bottom: 15px; font-size: 0.9rem;">
+                A neural network with softmax output <strong>always</strong> assigns probabilities that sum to 1.0.
+                Even for completely unrelated input, one class will get the highest probability &mdash; often with high confidence.
+                Without OOD detection, "hello how are you" would be classified as a scenario with 96% confidence!
+            </p>
+            <div class="code-block">
+<pre>
+<span class="code-comment"># WITHOUT OOD detection (broken!):</span>
+<span class="code-str">"hello how are you"</span> &rarr; MLP softmax &rarr; [<span class="code-val">0.02</span>, <span class="code-val">0.96</span>, <span class="code-val">0.02</span>]
+                                          export  <span style="color: #ff6b6b;">soc_battery</span>  account
+                                          <span class="code-comment"># WRONG! 96% confident in battery scenario for "hello"</span>
+
+<span class="code-comment"># WITH OOD detection (fixed!):</span>
+<span class="code-str">"hello how are you"</span> &rarr; cosine similarity to centroids &rarr; max = <span class="code-val">0.171</span>
+                         <span class="code-val">0.171</span> &lt; <span class="code-val">0.45</span> threshold &rarr; <span style="color: #2ed573;">UNKNOWN</span> (skip MLP entirely)
+</pre>
+            </div>
+        </div>
+
+        <div class="flow-container">
+            <div class="flow-title">OOD Detection: Centroid-Based Gating</div>
+            <div class="flow-steps">
+                <div class="flow-step start">
+                    <h4>During Training: Compute Centroids</h4>
+                    <p>For each scenario, average all its training phrase embeddings into one "centroid" vector.<br>
+                    3 scenarios &rarr; 3 centroid vectors (each 384-dim)</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action" style="border-color: #45aaf2;">
+                    <h4>At Runtime: Encode User Query</h4>
+                    <p>"hello how are you" &rarr; 384-dim embedding vector</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action" style="border-color: #9b59b6;">
+                    <h4>Compute Cosine Similarity to All Centroids</h4>
+                    <p>Compare query embedding against each centroid:<br>
+                    similarity_export = 0.152 | similarity_battery = 0.171 | similarity_account = 0.098</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step decision">
+                    <h4>Max Similarity &ge; 0.45?</h4>
+                    <p>max(0.152, 0.171, 0.098) = 0.171 &lt; 0.45</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-branch">
+                    <div class="flow-branch-arm">
+                        <span class="branch-label">&#x2705; &ge; 0.45 &mdash; In Distribution</span>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step action">
+                            <h4>Pass to MLP Classifier</h4>
+                            <p>Query is close enough to known scenarios.<br>Use neural network to determine which one.</p>
+                        </div>
+                    </div>
+                    <div class="flow-branch-arm">
+                        <span class="branch-label">&#x274C; &lt; 0.45 &mdash; Out of Distribution</span>
+                        <div class="flow-arrow">&#x2B07;</div>
+                        <div class="flow-step" style="border-color: #ff6b6b;">
+                            <h4>UNKNOWN &rarr; LLM Fallback</h4>
+                            <p>Query is too far from all known scenarios.<br>Route to Claude API for an AI-generated response.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Why Centroids?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Cheap:</strong> One 384-dim vector per class (stored in centroids.npy)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Fast:</strong> One matrix multiply at inference (&lt;1ms)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Intuitive:</strong> Centroid = "average meaning" of all training phrases for a scenario</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Threshold tunable:</strong> 0.45 is conservative; lower = more strict, higher = more lenient</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>No extra model needed:</strong> Reuses the same embeddings from training</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Real-World OOD Examples</h3>
+                <ul>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "what is the export limit" &rarr; sim = <strong>0.92</strong> &rarr; IN (export_limit)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "battery charge level" &rarr; sim = <strong>0.88</strong> &rarr; IN (soc_battery)</li>
+                    <li><span class="bullet" style="color: #2ed573;">&#x2705;</span> "check user account" &rarr; sim = <strong>0.61</strong> &rarr; IN (account_status)</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "hello how are you" &rarr; sim = <strong>0.171</strong> &rarr; OOD</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "what is the weather" &rarr; sim = <strong>0.082</strong> &rarr; OOD</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "tell me a joke" &rarr; sim = <strong>0.077</strong> &rarr; OOD</li>
+                    <li><span class="bullet" style="color: #ff6b6b;">&#x274C;</span> "reset my password" &rarr; sim = <strong>0.342</strong> &rarr; OOD</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P3 - 5. Selection Pipeline -->
+    <div class="section" id="p3-selection">
+        <div class="section-title">
+            <span class="num">5</span>
+            Complete Selection Pipeline
+        </div>
+        <p class="section-subtitle">The full journey from user text to scenario activation (or AI fallback)</p>
+
+        <div class="flow-container">
+            <div class="flow-title">End-to-End Classification Pipeline</div>
+            <div class="flow-steps">
+                <div class="flow-step start">
+                    <h4>&#x1F464; User Sends Message via WebSocket</h4>
+                    <p>"what is the export limit of the site?"</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action" style="border-color: #45aaf2;">
+                    <h4>&#x1F4DD; Step 1: Text &rarr; Embedding</h4>
+                    <p>SentenceTransformer encodes text to 384-dim vector.<br>
+                    Time: ~5ms on CPU</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action" style="border-color: #9b59b6;">
+                    <h4>&#x1F50D; Step 2: OOD Gate (Cosine Similarity)</h4>
+                    <p>Normalize embedding and centroids. Compute cosine similarity to each centroid.<br>
+                    max_similarity = 0.92 (against export_limit centroid)<br>
+                    0.92 &ge; 0.45 &rarr; <strong>PASS</strong> (in-distribution)</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action" style="border-color: #ff9f43;">
+                    <h4>&#x1F9E0; Step 3: MLP Classification</h4>
+                    <p>Feed embedding through neural network.<br>
+                    Softmax output: [export_limit: <strong>0.998</strong>, soc_battery: 0.001, account: 0.001]<br>
+                    0.998 &ge; 0.4 confidence threshold &rarr; <strong>PASS</strong></p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step action">
+                    <h4>&#x2699; Step 4: Activate Scenario</h4>
+                    <p>Matched: "export_limit" with confidence 0.998.<br>
+                    Load scenario from registry. Create session. Begin step execution.</p>
+                </div>
+                <div class="flow-arrow">&#x2B07;</div>
+                <div class="flow-step end">
+                    <h4>&#x1F4AC; Step 5: Execute Flow</h4>
+                    <p>Flow engine walks steps: run_script &rarr; ask_choice &rarr; branch &rarr; goto &rarr; end<br>
+                    Each step sends WebSocket messages back to client.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classification code -->
+        <div class="arch-card full-width" style="margin-top: 25px;">
+            <h3>Classification Code (intent_classifier.py)</h3>
+            <div class="code-block" style="margin: 10px 0 0 0;">
+                <span class="lang-label">Python</span>
+<pre>
+<span class="code-key">def</span> <span class="code-val">predict</span>(self, text: str) -> tuple[str | None, float]:
+    <span class="code-comment"># Step 1: Encode text to embedding</span>
+    embedding = self.embedder.encode_single(text).reshape(<span class="code-val">1</span>, <span class="code-val">-1</span>)
+
+    <span class="code-comment"># Step 2: OOD Gate — cosine similarity to class centroids</span>
+    <span class="code-key">if</span> self.centroids <span class="code-key">is not</span> None:
+        norm_emb = embedding / np.linalg.norm(embedding, axis=<span class="code-val">1</span>, keepdims=<span class="code-val">True</span>)
+        norm_cent = self.centroids / np.linalg.norm(self.centroids, axis=<span class="code-val">1</span>, keepdims=<span class="code-val">True</span>)
+        similarities = (norm_emb @ norm_cent.T)[<span class="code-val">0</span>]        <span class="code-comment"># Cosine similarity</span>
+        max_similarity = float(similarities.max())
+        <span class="code-key">if</span> max_similarity < self.similarity_threshold:     <span class="code-comment"># 0.45 default</span>
+            <span class="code-key">return</span> None, max_similarity                     <span class="code-comment"># UNKNOWN — OOD</span>
+
+    <span class="code-comment"># Step 3: MLP Classification</span>
+    probabilities = self.clf.predict_proba(embedding)[<span class="code-val">0</span>]
+    max_idx = probabilities.argmax()
+    confidence = float(probabilities[max_idx])
+    scenario_id = self.label_encoder.inverse_transform([max_idx])[<span class="code-val">0</span>]
+
+    <span class="code-key">if</span> confidence < self.confidence_threshold:           <span class="code-comment"># 0.4 default</span>
+        <span class="code-key">return</span> None, confidence                           <span class="code-comment"># UNKNOWN — low confidence</span>
+    <span class="code-key">return</span> scenario_id, confidence                        <span class="code-comment"># MATCH!</span>
+</pre>
+            </div>
+        </div>
+
+        <!-- Timing breakdown -->
+        <div class="arch-grid" style="margin-top: 25px;">
+            <div class="arch-card">
+                <h3>Performance (per query)</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Embedding:</strong> ~5ms (SentenceTransformer on CPU)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>OOD check:</strong> &lt;0.1ms (one matrix multiply)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>MLP predict:</strong> &lt;0.5ms (forward pass through 3 layers)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Total classification:</strong> ~6ms end-to-end</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>LLM fallback:</strong> ~1-3 seconds (Claude API call, only when OOD)</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Two Thresholds</h3>
+                <ul>
+                    <li><span class="bullet" style="color: #9b59b6;">&#x25CF;</span> <strong>Similarity threshold (0.45):</strong> "Is this query even related to any scenario?"<br>
+                    <span style="color: #8080b0; font-size: 0.82rem; margin-left: 24px;">Low = strict (rejects more), High = lenient (accepts more)</span></li>
+                    <li><span class="bullet" style="color: #ff9f43;">&#x25CF;</span> <strong>Confidence threshold (0.4):</strong> "Is the MLP sure which scenario it is?"<br>
+                    <span style="color: #8080b0; font-size: 0.82rem; margin-left: 24px;">Safety net after OOD passes, catches ambiguous queries</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P3 - 6. LLM Fallback -->
+    <div class="section" id="p3-llm-fallback">
+        <div class="section-title">
+            <span class="num">6</span>
+            LLM Fallback (Claude API)
+        </div>
+        <p class="section-subtitle">When the neural network says "I don't know", a large language model provides an intelligent response</p>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>How It Works</h3>
+                <ul>
+                    <li><span class="bullet"><span class="step-num">1</span></span> Classifier returns None (unknown query)</li>
+                    <li><span class="bullet"><span class="step-num">2</span></span> Flow engine checks if LLM fallback is available</li>
+                    <li><span class="bullet"><span class="step-num">3</span></span> Send user's message to Claude API with system prompt</li>
+                    <li><span class="bullet"><span class="step-num">4</span></span> Claude generates a helpful, context-aware response</li>
+                    <li><span class="bullet"><span class="step-num">5</span></span> Response sent as "ai_response" type (purple bubble)</li>
+                    <li><span class="bullet"><span class="step-num">6</span></span> User stays in IDLE state (no scenario activated)</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Why Two AI Layers?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Layer 1 (Neural Network):</strong> Fast (~6ms), deterministic, domain-specific. Perfect for known scenarios. Cannot improvise.</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Layer 2 (LLM / Claude):</strong> Slow (~2s), generative, general-purpose. Handles anything. Expensive per call.</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Best of both worlds:</strong> Use the fast, cheap model for known queries. Only call the powerful LLM when needed.</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Cost optimization:</strong> ~95% of queries hit scenarios (free). ~5% hit LLM (paid API call).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-card full-width">
+            <h3>LLM Fallback System Prompt</h3>
+            <div class="code-block" style="margin: 10px 0 0 0;">
+                <span class="lang-label">Prompt</span>
+<pre>
+<span class="code-str">"You are a helpful assistant in a support chatbot called SmartChat.
+The user asked something that didn't match any predefined scenario.
+Provide a brief, helpful response. If you don't know the specific
+answer, be honest and suggest how the user might find the information.
+
+The chatbot supports these specific topics (scenarios):
+<span class="code-val">Export Limit, Battery SOC, User Account Status</span>.
+If the user's question is close to one of these, suggest they rephrase."</span>
+
+<span class="code-comment">// This gives Claude context about what SmartChat CAN do,
+// so it can guide users toward supported scenarios.</span>
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- P3 - 7. Design Decisions -->
+    <div class="section" id="p3-design-decisions">
+        <div class="section-title">
+            <span class="num">7</span>
+            Design Decisions &amp; Architecture Rationale
+        </div>
+        <p class="section-subtitle">Why SmartChat is designed this way &mdash; the tradeoffs and reasoning</p>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Why MLP over a Transformer Classifier?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Embeddings already capture semantics.</strong> The SentenceTransformer does the hard language understanding. MLP just draws decision boundaries.</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Fast to train:</strong> 30 seconds vs 30+ minutes for fine-tuning a Transformer</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Small model:</strong> ~1.6MB vs 100MB+ for a Transformer classifier</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Easy to retrain:</strong> Add a scenario, retrain in seconds. No GPU needed.</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Scikit-learn:</strong> No PyTorch/TensorFlow dependency for inference</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Why Augmentation with Claude API?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>User writes 5 phrases</strong>, system needs 10,000 for good coverage</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Claude understands intent:</strong> Generates meaningful variations, not random noise</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Covers edge cases:</strong> Typos, slang, formal, casual, different languages</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Cached:</strong> Pay once per scenario, reuse forever</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Fallback:</strong> Basic augmentation (case changes, punctuation) when no API key</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Why Centroid OOD vs. Other Methods?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>No extra model:</strong> Just a numpy array (3&times;384 for 3 scenarios)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Alternative: Train an "other" class</strong> &mdash; requires curating negative examples, hard to maintain</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Alternative: Temperature scaling</strong> &mdash; still doesn't reject truly OOD inputs</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Alternative: Mahalanobis distance</strong> &mdash; more complex, covariance matrix needed</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Centroids are the sweet spot:</strong> Simple, effective, explainable, fast</li>
+                </ul>
+            </div>
+            <div class="arch-card">
+                <h3>Why WebSocket for Chat?</h3>
+                <ul>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Bidirectional:</strong> Server pushes responses without client polling</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Multi-step scenarios:</strong> One user message can trigger multiple server responses (typing indicator, script result, question)</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Real-time:</strong> Typing indicators, instant results</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Stateful:</strong> Session maintained throughout the conversation</li>
+                    <li><span class="bullet">&#x25B6;</span> <strong>Auto-reconnect:</strong> Frontend hook handles disconnections gracefully</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arch-card full-width">
+            <h3>Overall System Design Philosophy</h3>
+            <div style="display: flex; gap: 25px; flex-wrap: wrap; margin-top: 15px;">
+                <div style="flex: 1; min-width: 250px;">
+                    <h4 style="color: #45aaf2; margin-bottom: 8px;">Scenario-Driven</h4>
+                    <p style="color: #a0a0c0; font-size: 0.85rem;">
+                        Instead of a general AI chatbot, SmartChat uses <strong>predefined workflows</strong>. Each scenario is a deterministic
+                        flow: run scripts, ask questions, branch on answers. This ensures <strong>reliable, predictable behavior</strong> for
+                        support operations where accuracy matters more than creativity.
+                    </p>
+                </div>
+                <div style="flex: 1; min-width: 250px;">
+                    <h4 style="color: #ff9f43; margin-bottom: 8px;">AI at the Edges</h4>
+                    <p style="color: #a0a0c0; font-size: 0.85rem;">
+                        AI is used at two points: <strong>intent classification</strong> (understanding what the user wants) and
+                        <strong>fallback responses</strong> (when no scenario matches). The core flow engine is deterministic &mdash;
+                        no AI hallucination in the actual business logic. Scripts run real code, not generated code.
+                    </p>
+                </div>
+                <div style="flex: 1; min-width: 250px;">
+                    <h4 style="color: #2ed573; margin-bottom: 8px;">Progressive Complexity</h4>
+                    <p style="color: #a0a0c0; font-size: 0.85rem;">
+                        Simple scenarios = simple YAML. Complex scenarios use branching and looping with goto.
+                        The visual flow editor makes it accessible to non-developers while the underlying
+                        YAML format keeps it version-controllable and diff-friendly.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1462,8 +2666,8 @@ check export limit</div>
 
 <!-- Footer -->
 <div style="text-align: center; padding: 35px; color: #5a5a8a; border-top: 1px solid #2a2a4a;">
-    <p>SmartChat Design Document | Version 1.0</p>
-    <p style="font-size: 0.8rem; margin-top: 8px;">Two-page architecture: Create &rarr; Activate</p>
+    <p>SmartChat Design Document | Version 2.0</p>
+    <p style="font-size: 0.8rem; margin-top: 8px;">Three-page architecture: Create &rarr; Activate &rarr; AI Deep Dive | Visual Flow Editor | OOD Detection | LLM Fallback</p>
 </div>
 
 <!-- Page Switching Script -->

@@ -1,14 +1,10 @@
-import { Sidebar } from './Sidebar';
 import { ChatContainer } from '../Chat/ChatContainer';
 import './Layout.css';
 
 export function MainLayout() {
   return (
-    <>
-      <Sidebar />
-      <main className="main-content">
-        <ChatContainer />
-      </main>
-    </>
+    <main className="main-content" style={{ marginLeft: 0 }}>
+      <ChatContainer />
+    </main>
   );
 }

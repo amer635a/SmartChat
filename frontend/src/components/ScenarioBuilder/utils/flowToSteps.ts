@@ -11,19 +11,33 @@ export function flowToSteps(nodes: FlowNode[], edges: FlowEdge[]): Step[] {
 
   const nodeMap = new Map(nodes.map(n => [n.id, n]));
 
+  // Build label map: nodeId → label (for goto target resolution)
+  const nodeIdToLabel = new Map<string, string>();
+  for (const node of nodes) {
+    const lbl = node.data.label as string | undefined;
+    if (lbl) nodeIdToLabel.set(node.id, lbl);
+  }
+
+  const visited = new Set<string>();
+
   function buildChain(startId: string): Step[] {
     const steps: Step[] = [];
     let currentId: string | undefined = startId;
 
     while (currentId) {
+      if (visited.has(currentId)) break; // prevent cycles
+      visited.add(currentId);
+
       const node = nodeMap.get(currentId);
       if (!node || node.type === 'start') break;
 
       const d = node.data;
+      const label = d.label as string | undefined;
 
       if (d.nodeType === 'run_script') {
         steps.push({
           action: 'run_script',
+          label: label || undefined,
           script: d.script,
           args: d.args,
           display_message: d.display_message,
@@ -41,6 +55,7 @@ export function flowToSteps(nodes: FlowNode[], edges: FlowEdge[]): Step[] {
         }
         steps.push({
           action: 'ask_choice',
+          label: label || undefined,
           question: d.question,
           options,
           branches: Object.keys(branches).length ? branches : undefined,
@@ -50,6 +65,7 @@ export function flowToSteps(nodes: FlowNode[], edges: FlowEdge[]): Step[] {
       } else if (d.nodeType === 'ask_input') {
         steps.push({
           action: 'ask_input',
+          label: label || undefined,
           question: d.question,
           input_key: d.input_key,
           validation: d.validation,
@@ -59,9 +75,20 @@ export function flowToSteps(nodes: FlowNode[], edges: FlowEdge[]): Step[] {
       } else if (d.nodeType === 'end') {
         steps.push({
           action: 'end',
+          label: label || undefined,
           message: d.message,
         });
         break;
+
+      } else if (d.nodeType === 'goto') {
+        // Resolve goto: find what the 'out' edge points to, then look up that node's label
+        const targetNodeId = outMap.get(`${currentId}:out`);
+        const targetLabel = targetNodeId ? nodeIdToLabel.get(targetNodeId) : (d.target as string);
+        steps.push({
+          action: 'goto',
+          target: targetLabel || (d.target as string) || undefined,
+        });
+        break; // goto is terminal
 
       } else {
         break;

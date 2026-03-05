@@ -3,8 +3,27 @@ import { v4 as uuidv4 } from 'uuid';
 import type { ChatMessage } from '../types/chat';
 import type { WSServerMessage } from '../types/websocket';
 
+const STORAGE_KEY = 'smartchat_messages';
+
+function loadMessages(): ChatMessage[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return parsed.map((m: ChatMessage) => ({ ...m, timestamp: new Date(m.timestamp) }));
+  } catch {
+    return [];
+  }
+}
+
+function saveMessages(messages: ChatMessage[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+  } catch { /* quota exceeded — ignore */ }
+}
+
 export function useChatSession(messageQueue: WSServerMessage[]) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(loadMessages);
   const [isTyping, setIsTyping] = useState(false);
   const processedCount = useRef(0);
 
@@ -50,5 +69,16 @@ export function useChatSession(messageQueue: WSServerMessage[]) {
     setMessages(prev => [...prev, msg]);
   }, []);
 
-  return { messages, isTyping, addUserMessage };
+  // Persist messages to localStorage whenever they change
+  useEffect(() => {
+    saveMessages(messages);
+  }, [messages]);
+
+  const clearMessages = useCallback(() => {
+    setMessages([]);
+    processedCount.current = 0;
+    localStorage.removeItem(STORAGE_KEY);
+  }, []);
+
+  return { messages, isTyping, addUserMessage, clearMessages };
 }

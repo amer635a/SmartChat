@@ -13,7 +13,7 @@ interface Props {
 export function ChatContainer({ sessionId: propSessionId }: Props) {
   const sessionId = useMemo(() => propSessionId || uuidv4(), [propSessionId]);
   const { sendMessage, messageQueue, isConnected } = useWebSocket(sessionId);
-  const { messages, isTyping, addUserMessage } = useChatSession(messageQueue);
+  const { messages, isTyping, addUserMessage, clearMessages } = useChatSession(messageQueue);
 
   const handleSendText = useCallback((text: string) => {
     addUserMessage(text);
@@ -32,9 +32,18 @@ export function ChatContainer({ sessionId: propSessionId }: Props) {
           <div className={`status-dot ${isConnected ? 'connected' : 'disconnected'}`} />
           <span className="chat-title">SmartChat</span>
         </div>
-        <span className="connection-status">
-          {isConnected ? 'Connected' : 'Reconnecting...'}
-        </span>
+        <div className="chat-header-right">
+          <span className="connection-status">
+            {isConnected ? 'Connected' : 'Reconnecting...'}
+          </span>
+          {messages.length > 0 && (
+            <button className="clear-chat-btn" onClick={clearMessages} title="Clear chat">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
       <MessageList
         messages={messages}

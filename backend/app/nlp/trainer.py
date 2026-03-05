@@ -46,10 +46,18 @@ class IntentTrainer:
         )
         clf.fit(embeddings, encoded_labels)
 
+        # Compute per-class centroids for OOD detection
+        centroids = {}
+        for label in unique_labels:
+            mask = np.array(labels) == label
+            centroids[label] = embeddings[mask].mean(axis=0)
+        centroids_array = np.array([centroids[l] for l in label_encoder.classes_])
+
         # Save model artifacts
         self.model_dir.mkdir(parents=True, exist_ok=True)
         joblib.dump(clf, self.model_dir / "intent_classifier.joblib")
         joblib.dump(label_encoder, self.model_dir / "label_encoder.joblib")
+        np.save(self.model_dir / "centroids.npy", centroids_array)
 
         metadata = {
             "num_scenarios": len(unique_labels),

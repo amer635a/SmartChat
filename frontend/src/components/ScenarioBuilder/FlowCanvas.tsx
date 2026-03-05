@@ -4,8 +4,9 @@ import {
   Background,
   Controls,
   MiniMap,
-  addEdge,
   BackgroundVariant,
+  ConnectionLineType,
+  MarkerType,
   type Connection,
   type OnNodesChange,
   type OnEdgesChange,
@@ -13,6 +14,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { nodeTypes } from './nodes/nodeTypes';
+import { edgeTypes } from './edges/edgeTypes';
 import { v4 as uuidv4 } from 'uuid';
 import type { FlowNode, FlowEdge } from '../../types/flowTypes';
 
@@ -37,7 +39,16 @@ export function FlowCanvas({
 }: Props) {
   const onConnect = useCallback(
     (connection: Connection) => {
-      onEdgesUpdate(addEdge({ ...connection, id: uuidv4() }, edges) as FlowEdge[]);
+      const newEdge: FlowEdge = {
+        ...connection,
+        id: uuidv4(),
+        source: connection.source,
+        target: connection.target,
+        type: 'draggable',
+        markerEnd: { type: MarkerType.ArrowClosed, color: '#4a4a8a' },
+        data: { bendPoints: [] },
+      };
+      onEdgesUpdate([...edges, newEdge]);
     },
     [edges, onEdgesUpdate]
   );
@@ -48,13 +59,23 @@ export function FlowCanvas({
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        isValidConnection={() => true}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
+        defaultEdgeOptions={{
+          type: 'draggable',
+          markerEnd: { type: MarkerType.ArrowClosed, color: '#4a4a8a' },
+          data: { bendPoints: [] },
+        }}
+        connectionLineType={ConnectionLineType.SmoothStep}
         fitView
-        fitViewOptions={{ padding: 0.2 }}
+        fitViewOptions={{ padding: 0.4, minZoom: 0.6, maxZoom: 1.8 }}
+        minZoom={0.3}
+        maxZoom={2}
         deleteKeyCode="Delete"
         proOptions={{ hideAttribution: true }}
       >
@@ -67,6 +88,7 @@ export function FlowCanvas({
               run_script: '#3498db',
               ask_choice: '#e67e22',
               ask_input: '#2ecc71',
+              goto: '#9b59b6',
               end: '#e74c3c',
             };
             return colors[node.type ?? ''] ?? '#6a6a9a';

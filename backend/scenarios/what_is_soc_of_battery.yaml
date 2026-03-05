@@ -10007,6 +10007,7 @@ steps:
   script: get_battery_soc.py
   display_message: 'Here is the current battery State of Charge:'
 - action: ask_choice
+  label: ask_again
   question: again what is soc of battery ?
   options:
   - label: 'Yes'
@@ -10021,7 +10022,8 @@ steps:
     - action: run_script
       script: get_battery_soc.py
       display_message: 'this again '
-    - action: end
+    - action: goto
+      target: ask_again
     'no':
     - action: end
       message: Is there anything else I can help you with?
