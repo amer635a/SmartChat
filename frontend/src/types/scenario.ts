@@ -9,7 +9,7 @@ export interface ChoiceOption {
   value: string;
 }
 
-export type StepAction = 'run_script' | 'ask_choice' | 'ask_input' | 'end' | 'goto';
+export type StepAction = 'run_script' | 'ask_choice' | 'ask_input' | 'end' | 'goto' | 'call_scenario';
 
 export interface Step {
   action: StepAction;
@@ -24,6 +24,7 @@ export interface Step {
   validation?: string;
   message?: string;
   target?: string;
+  target_scenario?: string;
 }
 
 export interface Scenario {

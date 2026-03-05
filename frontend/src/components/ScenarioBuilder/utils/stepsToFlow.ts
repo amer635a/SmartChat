@@ -72,6 +72,16 @@ function convertChain(
           message: step.message,
         },
       });
+    } else if (step.action === 'call_scenario') {
+      nodes.push({
+        id: nodeId,
+        type: 'call_scenario',
+        position: { x: 0, y: 0 },
+        data: {
+          nodeType: 'call_scenario',
+          target_scenario: step.target_scenario,
+        },
+      });
     } else if (step.action === 'goto') {
       nodes.push({
         id: nodeId,
@@ -96,8 +106,8 @@ function convertChain(
       targetHandle: 'in',
     });
 
-    // goto and end are terminal — stop the linear chain
-    if (step.action === 'goto' || step.action === 'end') {
+    // goto, end, and call_scenario are terminal — stop the linear chain
+    if (step.action === 'goto' || step.action === 'end' || step.action === 'call_scenario') {
       return;
     }
 

@@ -9,7 +9,7 @@ import { NodeConfigPanel } from './NodeConfigPanel';
 import { stepsToFlow } from './utils/stepsToFlow';
 import { flowToSteps } from './utils/flowToSteps';
 import { applyLayout } from './utils/autoLayout';
-import type { Scenario, ScriptInfo } from '../../types/scenario';
+import type { Scenario, ScenarioSummary, ScriptInfo } from '../../types/scenario';
 import type { FlowNode, FlowEdge, FlowNodeData } from '../../types/flowTypes';
 import { v4 as uuidv4 } from 'uuid';
 import './FlowEditor.css';
@@ -18,6 +18,7 @@ interface Props {
   scenario: Scenario;
   onChange: (s: Scenario) => void;
   scripts: ScriptInfo[];
+  scenarios: ScenarioSummary[];
   isNew: boolean;
   onSave: (s: Scenario, andTrain: boolean) => void;
   onDelete: (id: string) => void;
@@ -31,9 +32,10 @@ const DEFAULT_NODE_DATA: Record<string, FlowNodeData> = {
   ask_input: { nodeType: 'ask_input' },
   end: { nodeType: 'end' },
   goto: { nodeType: 'goto' },
+  call_scenario: { nodeType: 'call_scenario' },
 };
 
-export function FlowEditor({ scenario, onChange, scripts, isNew, onSave, onDelete, saving, saveResult }: Props) {
+export function FlowEditor({ scenario, onChange, scripts, scenarios, isNew, onSave, onDelete, saving, saveResult }: Props) {
   const [nodes, setNodes, onNodesChange] = useNodesState<FlowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<FlowEdge>([]);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -200,6 +202,7 @@ export function FlowEditor({ scenario, onChange, scripts, isNew, onSave, onDelet
     { type: 'ask_choice', label: 'Choice', color: '#e67e22' },
     { type: 'ask_input', label: 'Input', color: '#2ecc71' },
     { type: 'goto', label: 'GoTo', color: '#9b59b6' },
+    { type: 'call_scenario', label: 'Call', color: '#1abc9c' },
     { type: 'end', label: 'End', color: '#e74c3c' },
   ];
 
@@ -224,7 +227,7 @@ export function FlowEditor({ scenario, onChange, scripts, isNew, onSave, onDelet
           </div>
           <div className="flow-expanded-canvas-area">
             <FlowCanvas nodes={nodes} edges={edges} onNodesChange={handleNodesChange} onEdgesChange={handleEdgesChange} onEdgesUpdate={handleEdgesUpdate} onNodeClick={onNodeClick} onPaneClick={onPaneClick} />
-            <NodeConfigPanel node={selectedNode} scripts={scripts} onUpdateNode={handleUpdateNode} onDeleteNode={handleDeleteNode} />
+            <NodeConfigPanel node={selectedNode} scripts={scripts} scenarios={scenarios} onUpdateNode={handleUpdateNode} onDeleteNode={handleDeleteNode} />
           </div>
           <div className="flow-editor-bottom">
             {localError && <div className="flow-save-error">{localError}</div>}
@@ -262,7 +265,7 @@ export function FlowEditor({ scenario, onChange, scripts, isNew, onSave, onDelet
           </div>
           <div className="flow-editor-canvas-area">
             <FlowCanvas nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onEdgesUpdate={setEdges} onNodeClick={onNodeClick} onPaneClick={onPaneClick} />
-            <NodeConfigPanel node={selectedNode} scripts={scripts} onUpdateNode={handleUpdateNode} onDeleteNode={handleDeleteNode} />
+            <NodeConfigPanel node={selectedNode} scripts={scripts} scenarios={scenarios} onUpdateNode={handleUpdateNode} onDeleteNode={handleDeleteNode} />
           </div>
         </div>
       </div>

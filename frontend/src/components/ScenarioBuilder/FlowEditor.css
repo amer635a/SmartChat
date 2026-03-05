@@ -63,9 +63,9 @@
 /* ─── Toolbar ─── */
 .flow-toolbar {
   display: flex;
-  gap: 5px;
+  gap: 8px;
   align-items: center;
-  padding: 5px 10px;
+  padding: 8px 14px;
   background: #0d0d20;
   border-bottom: 1px solid #2a2a4a;
   flex-shrink: 0;
@@ -81,9 +81,9 @@
 .btn-add-node {
   background: transparent;
   border: 1px solid;
-  padding: 3px 9px;
-  border-radius: 5px;
-  font-size: 0.72rem;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -239,10 +239,14 @@
   border-radius: 10px;
   padding: 10px 14px;
   min-width: 170px;
-  max-width: 230px;
+  max-width: 240px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
   position: relative;
+}
+
+.flow-node-ask-choice {
+  max-width: 340px;
 }
 
 .flow-node:hover {
@@ -262,6 +266,12 @@
 .flow-node-goto {
   border-color: #9b59b6;
   background: #2a1a3e;
+  border-style: dashed;
+}
+
+.flow-node-call-scenario {
+  border-color: #1abc9c;
+  background: #1a2e2a;
   border-style: dashed;
 }
 
@@ -309,11 +319,17 @@
   border-radius: 10px;
   font-size: 0.7rem;
   font-weight: 600;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Ask Choice — handle row */
 .node-choice-handles {
   display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
   margin-top: 10px;
   border-top: 1px solid rgba(230, 126, 34, 0.2);
   padding-top: 6px;
@@ -329,7 +345,7 @@
 }
 
 .node-handle-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   color: #e67e22;
   text-transform: uppercase;
@@ -339,6 +355,9 @@
   border-radius: 4px;
   padding: 1px 5px;
   white-space: nowrap;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ─── Expand button ─── */
@@ -346,9 +365,9 @@
   background: rgba(108, 99, 255, 0.1);
   border: 1px solid rgba(108, 99, 255, 0.4);
   color: #6c63ff;
-  padding: 3px 10px;
-  border-radius: 5px;
-  font-size: 0.72rem;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;

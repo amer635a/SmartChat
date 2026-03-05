@@ -128,6 +128,7 @@ export function ScenarioBuilder() {
           scenario={activeScenario}
           onChange={setActiveScenario}
           scripts={scripts}
+          scenarios={scenarios}
           isNew={isNew}
           onSave={handleSave}
           onDelete={handleDelete}

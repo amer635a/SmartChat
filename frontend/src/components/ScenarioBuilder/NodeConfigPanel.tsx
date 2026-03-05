@@ -1,14 +1,15 @@
 import type { FlowNode, FlowNodeData } from '../../types/flowTypes';
-import type { ScriptInfo } from '../../types/scenario';
+import type { ScenarioSummary, ScriptInfo } from '../../types/scenario';
 
 interface Props {
   node: FlowNode | null;
   scripts: ScriptInfo[];
+  scenarios: ScenarioSummary[];
   onUpdateNode: (id: string, data: FlowNodeData) => void;
   onDeleteNode: (id: string) => void;
 }
 
-export function NodeConfigPanel({ node, scripts, onUpdateNode, onDeleteNode }: Props) {
+export function NodeConfigPanel({ node, scripts, scenarios, onUpdateNode, onDeleteNode }: Props) {
   if (!node) {
     return (
       <div className="node-config-panel node-config-empty">
@@ -35,6 +36,7 @@ export function NodeConfigPanel({ node, scripts, onUpdateNode, onDeleteNode }: P
     ask_input: 'Ask Input',
     end: 'End',
     goto: 'Go To',
+    call_scenario: 'Call Scenario',
   };
 
   return (
@@ -70,7 +72,11 @@ export function NodeConfigPanel({ node, scripts, onUpdateNode, onDeleteNode }: P
         <GotoConfig data={d} onChange={update} />
       )}
 
-      {d.nodeType !== 'start' && d.nodeType !== 'goto' && (
+      {d.nodeType === 'call_scenario' && (
+        <CallScenarioConfig data={d} scenarios={scenarios} onChange={update} />
+      )}
+
+      {d.nodeType !== 'start' && d.nodeType !== 'goto' && d.nodeType !== 'call_scenario' && (
         <div className="config-field" style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #2a2a4a' }}>
           <label>Label (for Go To target)</label>
           <input
@@ -294,6 +300,35 @@ function EndConfig({
         onChange={e => onChange({ message: e.target.value || undefined })}
         placeholder="Goodbye message..."
       />
+    </div>
+  );
+}
+
+function CallScenarioConfig({
+  data,
+  scenarios,
+  onChange,
+}: {
+  data: FlowNodeData;
+  scenarios: ScenarioSummary[];
+  onChange: (p: Partial<FlowNodeData>) => void;
+}) {
+  return (
+    <div className="config-field">
+      <label>Target Scenario</label>
+      <select
+        className="builder-select"
+        value={data.target_scenario ?? ''}
+        onChange={e => onChange({ target_scenario: e.target.value || undefined })}
+      >
+        <option value="">-- Select scenario --</option>
+        {scenarios.map(s => (
+          <option key={s.id} value={s.id}>{s.name}</option>
+        ))}
+      </select>
+      <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
+        When reached, execution transfers to the selected scenario.
+      </p>
     </div>
   );
 }

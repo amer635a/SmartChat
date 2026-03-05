@@ -80,6 +80,13 @@ export function flowToSteps(nodes: FlowNode[], edges: FlowEdge[]): Step[] {
         });
         break;
 
+      } else if (d.nodeType === 'call_scenario') {
+        steps.push({
+          action: 'call_scenario',
+          target_scenario: d.target_scenario as string | undefined,
+        });
+        break; // call_scenario is terminal
+
       } else if (d.nodeType === 'goto') {
         // Resolve goto: find what the 'out' edge points to, then look up that node's label
         const targetNodeId = outMap.get(`${currentId}:out`);

@@ -146,6 +146,27 @@ class FlowEngine:
             session.reset()
             return [ResponseMessage(type="error", content=f"Goto target '{step.target}' not found.")]
 
+        elif step.action == "call_scenario":
+            target_id = step.target_scenario
+            target = self.registry.get(target_id) if target_id else None
+            if not target:
+                session.reset()
+                return [ResponseMessage(type="error", content=f"Target scenario '{target_id}' not found.")]
+
+            responses.append(ResponseMessage(
+                type="scenario_start",
+                content=f"Switching to: {target.name}"
+            ))
+
+            session.active_scenario_id = target_id
+            session.current_step_index = 0
+            session.current_branch_key = None
+            session.current_branch_step_index = 0
+            session.state = SessionState.IDLE
+
+            step_responses = await self._execute_current_step(session)
+            responses.extend(step_responses)
+
         elif step.action == "end":
             msg = step.message or "Scenario complete. How can I help you next?"
             responses.append(ResponseMessage(type="scenario_end", content=msg))
