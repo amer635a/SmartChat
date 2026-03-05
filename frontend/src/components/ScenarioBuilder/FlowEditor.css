@@ -6,68 +6,88 @@
   overflow: hidden;
 }
 
-.flow-editor-top {
-  padding: 16px 24px 0;
-  flex-shrink: 0;
-  overflow-y: auto;
-  max-height: 25vh;
-}
-
-.flow-editor-top-sections {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 0;
-}
-
-.flow-editor-top-sections .form-section {
-  margin-bottom: 16px;
-}
-
-.flow-editor-body {
-  flex: 1;
+/* ─── Side-by-side split ─── */
+.flow-split {
   display: flex;
-  flex-direction: column;
+  flex: 1;
   min-height: 0;
   overflow: hidden;
 }
 
-/* Toolbar */
+/* Left column: metadata + phrases */
+.flow-split-left {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 14px 16px;
+  border-right: 1px solid #2a2a4a;
+  background: #0a0a1a;
+  gap: 0;
+}
+
+.flow-split-left .form-title {
+  font-size: 1rem;
+  margin: 0 0 10px 0;
+  color: #fff;
+}
+
+.flow-split-left .form-section {
+  margin-bottom: 10px;
+}
+
+.flow-split-left-actions {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #2a2a4a;
+  flex-shrink: 0;
+}
+
+.flow-split-left-actions .action-bar {
+  border-top: none;
+  margin-top: 0;
+  padding: 4px 0;
+  flex-wrap: wrap;
+}
+
+/* Right column: toolbar + canvas */
+.flow-split-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ─── Toolbar ─── */
 .flow-toolbar {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
-  padding: 8px 16px;
+  padding: 5px 10px;
   background: #0d0d20;
-  border-top: 1px solid #2a2a4a;
   border-bottom: 1px solid #2a2a4a;
   flex-shrink: 0;
-  flex-wrap: wrap;
 }
 
 .flow-toolbar-label {
   color: #6a6a9a;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  white-space: nowrap;
-}
-
-.flow-toolbar-hint {
-  color: #3a3a5a;
-  font-size: 0.75rem;
   white-space: nowrap;
 }
 
 .btn-add-node {
   background: transparent;
   border: 1px solid;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.2s;
+  transition: all 0.15s;
   white-space: nowrap;
 }
 
@@ -76,7 +96,11 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
-/* Canvas + Config Panel */
+.toolbar-spacer {
+  flex: 1;
+}
+
+/* ─── Canvas + Config Panel ─── */
 .flow-editor-canvas-area {
   flex: 1;
   display: flex;
@@ -128,7 +152,7 @@
   stroke-width: 2.5;
 }
 
-/* Draggable edge — bend point (blue, drag to move, dbl-click to remove) */
+/* Draggable edge — bend point */
 .edge-bend-point {
   fill: #6c63ff;
   stroke: #0d0d20;
@@ -138,7 +162,6 @@
 .edge-bend-point:hover {
   fill: #fff;
 }
-
 
 .flow-canvas-container .react-flow__handle {
   width: 10px;
@@ -152,12 +175,12 @@
   transform: scale(1.3);
 }
 
-/* Config Panel */
+/* ─── Config Panel ─── */
 .node-config-panel {
-  width: 300px;
+  width: 260px;
   background: #0d0d20;
   border-left: 1px solid #2a2a4a;
-  padding: 16px;
+  padding: 12px;
   overflow-y: auto;
   flex-shrink: 0;
   display: flex;
@@ -171,21 +194,21 @@
   justify-content: center;
   text-align: center;
   color: #4a4a6a;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .config-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
   border-bottom: 1px solid #2a2a4a;
 }
 
 .config-panel-type {
   color: #8080b0;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -193,23 +216,23 @@
 
 .config-hint {
   color: #4a4a6a;
-  font-size: 0.82rem;
-  line-height: 1.5;
+  font-size: 0.78rem;
+  line-height: 1.4;
 }
 
 .config-field {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .config-field label {
   display: block;
   color: #6a6a9a;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
-/* Flow Node Styles (rendered inside the canvas) */
+/* ─── Flow Node Styles ─── */
 .flow-node {
   background: #1a1a3e;
   border: 2px solid #2a2a4a;
@@ -296,7 +319,6 @@
   padding-top: 6px;
 }
 
-/* Each cell is a positioned context so its Handle anchors to IT, not the whole node */
 .node-choice-handle-cell {
   flex: 1;
   display: flex;
@@ -319,20 +341,19 @@
   white-space: nowrap;
 }
 
-/* Expand button in toolbar */
+/* ─── Expand button ─── */
 .btn-expand-canvas {
-  background: rgba(108, 99, 255, 0.12);
-  border: 1px solid #6c63ff;
+  background: rgba(108, 99, 255, 0.1);
+  border: 1px solid rgba(108, 99, 255, 0.4);
   color: #6c63ff;
-  padding: 5px 14px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.2s;
+  transition: all 0.15s;
   white-space: nowrap;
-  margin-left: auto;
 }
 
 .btn-expand-canvas:hover {
@@ -340,7 +361,7 @@
   color: #fff;
 }
 
-/* Fullscreen expanded overlay */
+/* ─── Fullscreen expanded overlay ─── */
 .flow-expanded-overlay {
   position: fixed;
   inset: 0;
@@ -354,7 +375,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  padding: 10px 20px;
   background: #0d0d20;
   border-bottom: 1px solid #2a2a4a;
   flex-shrink: 0;
@@ -362,7 +383,7 @@
 
 .flow-expanded-title {
   color: #e0e0e0;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
 }
 
@@ -370,9 +391,9 @@
   background: rgba(255, 71, 87, 0.1);
   border: 1px solid #ff4757;
   color: #ff4757;
-  padding: 6px 16px;
+  padding: 5px 14px;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -391,9 +412,9 @@
   overflow: hidden;
 }
 
-/* Bottom Action Bar */
+/* ─── Bottom bar (expanded overlay only) ─── */
 .flow-editor-bottom {
-  padding: 8px 24px;
+  padding: 4px 16px;
   flex-shrink: 0;
   border-top: 1px solid #2a2a4a;
   background: #0a0a1a;
@@ -404,7 +425,7 @@
 .flow-editor-bottom .action-bar {
   border-top: none;
   margin-top: 0;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .flow-save-error {
@@ -412,8 +433,8 @@
   background: rgba(255, 71, 87, 0.1);
   border: 1px solid rgba(255, 71, 87, 0.3);
   border-radius: 6px;
-  padding: 8px 14px;
-  font-size: 0.85rem;
+  padding: 6px 10px;
+  font-size: 0.78rem;
   font-weight: 500;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }

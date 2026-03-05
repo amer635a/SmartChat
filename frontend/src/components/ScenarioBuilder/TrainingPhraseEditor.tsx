@@ -103,20 +103,17 @@ export function TrainingPhraseEditor({ phrases, onChange }: Props) {
             <span className="bulk-count">{nonEmpty.length.toLocaleString()}</span>
             <span className="bulk-label">training phrases loaded</span>
           </div>
-          <div className="phrases-preview-label">Preview (first 5):</div>
+          <div className="phrases-preview-label">Preview:</div>
           <div className="phrases-preview-list">
-            {nonEmpty.slice(0, 5).map((p, i) => (
+            {nonEmpty.slice(0, 3).map((p, i) => (
               <div key={i} className="phrases-preview-item">{p}</div>
             ))}
-            {nonEmpty.length > 5 && (
+            {nonEmpty.length > 3 && (
               <div className="phrases-preview-more">
-                + {(nonEmpty.length - 5).toLocaleString()} more phrases
+                + {(nonEmpty.length - 3).toLocaleString()} more
               </div>
             )}
           </div>
-          <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '10px 0 0' }}>
-            Upload a new JSON file to replace, or click Clear to start fresh.
-          </p>
         </div>
       ) : (
         // Manual edit view — shown when few phrases
