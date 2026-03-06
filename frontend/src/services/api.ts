@@ -8,6 +8,7 @@ export const API_URLS = {
   scenarioDetail: (id: string) => `${API_BASE}/scenarios/${id}`,
   scenarioDelete: (id: string) => `${API_BASE}/scenarios/${id}`,
   scenarioScripts: `${API_BASE}/scenarios/scripts`,
+  scenarioBrowse: (path: string) => `${API_BASE}/scenarios/browse?path=${encodeURIComponent(path)}`,
   scenarioReload: `${API_BASE}/scenarios/reload`,
   trainingTrain: `${API_BASE}/training/train`,
   trainingStatus: `${API_BASE}/training/status`,

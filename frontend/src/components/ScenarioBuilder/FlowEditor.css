@@ -457,3 +457,117 @@
   font-weight: 500;
   margin-bottom: 4px;
 }
+
+/* ─── File Picker ─── */
+.file-picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-picker {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 10px;
+  width: 480px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.file-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+.file-picker-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+
+.file-picker-path {
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  color: #6a6a9a;
+  background: #0a0a1a;
+  border-bottom: 1px solid #2a2a4a;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.file-picker-error {
+  padding: 8px 14px;
+  color: #e74c3c;
+  font-size: 0.8rem;
+}
+
+.file-picker-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.file-picker-loading,
+.file-picker-empty {
+  padding: 20px;
+  text-align: center;
+  color: #6a6a9a;
+  font-size: 0.8rem;
+}
+
+.file-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: #c0c0e0;
+  transition: background 0.1s;
+}
+
+.file-picker-item:hover {
+  background: rgba(108, 99, 255, 0.1);
+}
+
+.file-picker-item.is-dir {
+  font-weight: 600;
+}
+
+.file-picker-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.file-picker-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-browse {
+  background: rgba(108, 99, 255, 0.1);
+  border: 1px solid rgba(108, 99, 255, 0.4);
+  color: #6c63ff;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.btn-browse:hover {
+  background: rgba(108, 99, 255, 0.25);
+  color: #fff;
+}

@@ -15,6 +15,7 @@ export interface Step {
   action: StepAction;
   label?: string;
   script?: string;
+  command?: string;
   args?: Record<string, string>;
   display_message?: string;
   question?: string;

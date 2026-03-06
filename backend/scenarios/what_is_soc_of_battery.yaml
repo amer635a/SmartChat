@@ -10025,5 +10025,7 @@ steps:
     - action: goto
       target: ask_again
     'no':
+    - action: run_script
+      command: /home/amer/Desktop/Projects/SmartChat/backend/scripts/hello.sh
     - action: call_scenario
       target_scenario: export_limit

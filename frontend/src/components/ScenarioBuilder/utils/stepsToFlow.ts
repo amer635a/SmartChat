@@ -32,6 +32,7 @@ function convertChain(
           nodeType: 'run_script',
           label: step.label,
           script: step.script,
+          command: step.command,
           args: step.args,
           display_message: step.display_message,
         },

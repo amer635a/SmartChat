@@ -21,6 +21,37 @@ async def list_scripts():
     return scripts
 
 
+@router.get("/browse")
+async def browse_files(path: str = "/"):
+    """Browse the filesystem to pick a file for shell commands."""
+    from pathlib import Path as P
+    target = P(path).resolve()
+
+    if not target.exists():
+        raise HTTPException(status_code=404, detail="Path not found")
+
+    if target.is_file():
+        return {"type": "file", "path": str(target)}
+
+    items = []
+    if str(target) != "/":
+        items.append({"name": "..", "path": str(target.parent), "is_dir": True})
+
+    try:
+        for entry in sorted(target.iterdir(), key=lambda e: (not e.is_dir(), e.name.lower())):
+            if entry.name.startswith("."):
+                continue
+            items.append({
+                "name": entry.name,
+                "path": str(entry),
+                "is_dir": entry.is_dir(),
+            })
+    except PermissionError:
+        raise HTTPException(status_code=403, detail="Permission denied")
+
+    return {"type": "directory", "path": str(target), "items": items}
+
+
 @router.post("/create")
 async def create_scenario(scenario: Scenario):
     from app.main import scenario_registry

@@ -14,8 +14,9 @@ class Step(BaseModel):
     # Optional label — used as a goto target
     label: str | None = None
 
-    # For run_script
+    # For run_script — either a Python script name or a shell command
     script: str | None = None
+    command: str | None = None
     args: dict[str, str] | None = None
     display_message: str | None = None
 

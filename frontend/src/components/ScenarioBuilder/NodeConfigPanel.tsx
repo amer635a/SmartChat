@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import type { FlowNode, FlowNodeData } from '../../types/flowTypes';
 import type { ScenarioSummary, ScriptInfo } from '../../types/scenario';
+import { FilePicker } from './FilePicker';
 
 interface Props {
   node: FlowNode | null;
@@ -103,8 +105,18 @@ function RunScriptConfig({
   scripts: ScriptInfo[];
   onChange: (p: Partial<FlowNodeData>) => void;
 }) {
+  const mode = data.command !== undefined ? 'command' : 'script';
+  const [showBrowser, setShowBrowser] = useState(false);
   const args = data.args ?? {};
   const argEntries = Object.entries(args);
+
+  const switchMode = (newMode: string) => {
+    if (newMode === 'command') {
+      onChange({ script: undefined, command: data.command ?? '' });
+    } else {
+      onChange({ command: undefined, script: data.script ?? '' });
+    }
+  };
 
   const updateArg = (index: number, newKey: string, newValue: string) => {
     const entries = [...argEntries];
@@ -125,18 +137,51 @@ function RunScriptConfig({
   return (
     <>
       <div className="config-field">
-        <label>Script</label>
+        <label>Mode</label>
         <select
           className="builder-select"
-          value={data.script ?? ''}
-          onChange={e => onChange({ script: e.target.value || undefined })}
+          value={mode}
+          onChange={e => switchMode(e.target.value)}
         >
-          <option value="">-- Select script --</option>
-          {scripts.map(s => (
-            <option key={s.name} value={s.name}>{s.name}</option>
-          ))}
+          <option value="script">Python Script</option>
+          <option value="command">Shell Command</option>
         </select>
       </div>
+
+      {mode === 'script' && (
+        <div className="config-field">
+          <label>Script</label>
+          <select
+            className="builder-select"
+            value={data.script ?? ''}
+            onChange={e => onChange({ script: e.target.value || undefined })}
+          >
+            <option value="">-- Select script --</option>
+            {scripts.map(s => (
+              <option key={s.name} value={s.name}>{s.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {mode === 'command' && (
+        <div className="config-field">
+          <label>Command</label>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <input
+              className="builder-input"
+              style={{ flex: 1 }}
+              value={data.command ?? ''}
+              onChange={e => onChange({ command: e.target.value || undefined })}
+              placeholder="e.g. ls -la /tmp"
+            />
+            <button className="btn-browse" onClick={() => setShowBrowser(true)}>Browse</button>
+          </div>
+          <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
+            Use <code style={{ background: '#1a1a3e', padding: '1px 4px', borderRadius: 3 }}>{'${key}'}</code> for arg substitution
+          </p>
+        </div>
+      )}
       <div className="config-field">
         <label>Display Message</label>
         <input
@@ -172,6 +217,20 @@ function RunScriptConfig({
           + Add Arg
         </button>
       </div>
+
+      {showBrowser && (
+        <FilePicker
+          onSelect={(path) => {
+            if (mode === 'command') {
+              onChange({ command: path });
+            } else {
+              onChange({ script: path });
+            }
+            setShowBrowser(false);
+          }}
+          onClose={() => setShowBrowser(false)}
+        />
+      )}
     </>
   );
 }

@@ -100,7 +100,7 @@ class FlowEngine:
         if step.action == "run_script":
             session.state = SessionState.EXECUTING
             resolved_args = self._resolve_args(step.args, session)
-            result = await self.executor.run(step.script, args=resolved_args)
+            result = await self.executor.run(script_name=step.script, command=step.command, args=resolved_args)
 
             responses.append(ResponseMessage(
                 type="script_result",

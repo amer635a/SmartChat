@@ -39,6 +39,7 @@ export function flowToSteps(nodes: FlowNode[], edges: FlowEdge[]): Step[] {
           action: 'run_script',
           label: label || undefined,
           script: d.script,
+          command: d.command as string | undefined,
           args: d.args,
           display_message: d.display_message,
         });

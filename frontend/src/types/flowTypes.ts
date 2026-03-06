@@ -6,6 +6,7 @@ export interface FlowNodeData extends Record<string, unknown> {
   label?: string;
   // run_script fields
   script?: string;
+  command?: string;
   args?: Record<string, string>;
   display_message?: string;
   // ask_choice fields
