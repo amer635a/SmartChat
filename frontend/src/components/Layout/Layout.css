@@ -3,18 +3,21 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: #0a0a1a;
-  color: #e0e0e0;
+  background: var(--bg-deep);
+  color: var(--text-primary);
 }
 
-/* Header */
+/* Header — SolarEdge-inspired clean nav bar */
 .app-header {
-  background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 50%, #1a1a3e 100%);
-  padding: 16px 30px;
+  background: #ffffff;
+  padding: 0 30px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  border-bottom: 2px solid #6c63ff;
+  gap: 24px;
+  border-bottom: 3px solid var(--accent);
+  height: 60px;
+  box-shadow: var(--shadow-md);
+  z-index: 10;
 }
 
 .header-brand {
@@ -29,17 +32,18 @@
 
 .header-brand h1 {
   font-size: 1.4rem;
-  color: #fff;
+  color: #1a1a2e;
   margin: 0;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
+  font-weight: 700;
 }
 
 .brand-accent {
-  color: #6c63ff;
+  color: var(--accent);
 }
 
 .header-subtitle {
-  color: #6a6a9a;
+  color: #6a6a7a;
   font-size: 0.85rem;
   margin: 0;
 }
@@ -47,31 +51,31 @@
 /* Navigation Tabs */
 .header-nav {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   margin-left: auto;
 }
 
 .nav-tab {
   background: transparent;
   border: none;
-  color: #6a6a9a;
-  padding: 8px 20px;
+  color: #4a4a5a;
+  padding: 8px 22px;
   font-size: 0.9rem;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: all 0.2s;
   font-weight: 600;
   font-family: inherit;
 }
 
 .nav-tab:hover {
-  color: #e0e0e0;
-  background: rgba(108, 99, 255, 0.1);
+  color: var(--accent);
+  background: var(--accent-softer);
 }
 
 .nav-tab-active {
   color: #fff;
-  background: #6c63ff;
+  background: var(--accent);
 }
 
 /* Body */
@@ -84,8 +88,8 @@
 /* Sidebar */
 .sidebar {
   width: 280px;
-  background: #12122a;
-  border-right: 1px solid #2a2a4a;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -93,11 +97,11 @@
 
 .sidebar-header {
   padding: 16px 20px;
-  border-bottom: 1px solid #2a2a4a;
+  border-bottom: 1px solid var(--border);
 }
 
 .sidebar-header h3 {
-  color: #8080b0;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -114,7 +118,7 @@
 }
 
 .sidebar-loading, .sidebar-empty {
-  color: #4a4a6a;
+  color: var(--text-dim);
   font-size: 0.85rem;
   text-align: center;
   padding: 20px;

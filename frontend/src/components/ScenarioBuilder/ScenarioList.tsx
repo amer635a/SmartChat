@@ -26,7 +26,7 @@ export function ScenarioList({ scenarios, activeId, onSelect, onNew }: Props) {
           </div>
         ))}
         {scenarios.length === 0 && (
-          <p style={{ color: '#4a4a6a', fontSize: '0.85rem', textAlign: 'center', padding: '20px' }}>
+          <p style={{ color: 'var(--text-dim)', fontSize: '0.85rem', textAlign: 'center', padding: '20px' }}>
             No scenarios yet
           </p>
         )}

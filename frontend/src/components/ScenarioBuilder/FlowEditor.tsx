@@ -264,7 +264,7 @@ export function FlowEditor({ scenario, onChange, scripts, scenarios, isNew, onSa
             <button className="btn-expand-canvas" onClick={() => setExpanded(true)}>Expand</button>
           </div>
           <div className="flow-editor-canvas-area">
-            <FlowCanvas nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onEdgesUpdate={setEdges} onNodeClick={onNodeClick} onPaneClick={onPaneClick} />
+            <FlowCanvas nodes={nodes} edges={edges} onNodesChange={handleNodesChange} onEdgesChange={handleEdgesChange} onEdgesUpdate={handleEdgesUpdate} onNodeClick={onNodeClick} onPaneClick={onPaneClick} />
             <NodeConfigPanel node={selectedNode} scripts={scripts} scenarios={scenarios} onUpdateNode={handleUpdateNode} onDeleteNode={handleDeleteNode} />
           </div>
         </div>

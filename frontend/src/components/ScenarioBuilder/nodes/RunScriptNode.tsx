@@ -15,7 +15,7 @@ export function RunScriptNode({ data, selected }: NodeProps<Node<FlowNodeData>>)
   return (
     <div className={`flow-node flow-node-run-script${selected ? ' flow-node-selected' : ''}`}>
       <Handle type="target" position={Position.Top} id="in" />
-      <div className="node-type-badge" style={{ color: '#3498db' }}>{badge}</div>
+      <div className="node-type-badge" style={{ color: '#1a6da0' }}>{'\u2699'} {badge}</div>
       <div className="node-label">{label}</div>
       {data.display_message && (
         <div className="node-detail">{data.display_message as string}</div>

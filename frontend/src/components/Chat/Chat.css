@@ -3,10 +3,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #0d0d20;
+  background: var(--bg-panel);
   border-radius: 16px;
-  border: 1px solid #2a2a4a;
+  border: 1px solid var(--border);
   overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
 .chat-header {
@@ -14,8 +15,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  background: #1a1a3e;
-  border-bottom: 1px solid #2a2a4a;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
 }
 
 .chat-header-left {
@@ -31,8 +32,8 @@
   transition: background 0.3s;
 }
 
-.status-dot.connected { background: #2ed573; }
-.status-dot.disconnected { background: #ff4757; animation: pulse 1.5s infinite; }
+.status-dot.connected { background: var(--success); }
+.status-dot.disconnected { background: var(--danger); animation: pulse 1.5s infinite; }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
@@ -40,7 +41,7 @@
 }
 
 .chat-title {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 700;
   font-size: 1rem;
 }
@@ -52,15 +53,15 @@
 }
 
 .connection-status {
-  color: #6a6a9a;
+  color: var(--text-muted);
   font-size: 0.8rem;
 }
 
 .clear-chat-btn {
   background: transparent;
-  border: 1px solid #3a3a5a;
+  border: 1px solid var(--border-light);
   border-radius: 8px;
-  color: #6a6a9a;
+  color: var(--text-muted);
   cursor: pointer;
   padding: 6px 8px;
   display: flex;
@@ -70,9 +71,9 @@
 }
 
 .clear-chat-btn:hover {
-  color: #ff4757;
-  border-color: #ff4757;
-  background: rgba(255, 71, 87, 0.1);
+  color: var(--danger);
+  border-color: var(--danger);
+  background: rgba(239, 68, 68, 0.06);
 }
 
 /* Message List */
@@ -83,6 +84,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  background: var(--bg-deep);
 }
 
 .message-list::-webkit-scrollbar {
@@ -94,7 +96,7 @@
 }
 
 .message-list::-webkit-scrollbar-thumb {
-  background: #2a2a4a;
+  background: var(--border);
   border-radius: 3px;
 }
 
@@ -126,59 +128,60 @@
 }
 
 .user-bubble {
-  background: #6c63ff;
+  background: var(--accent);
   color: #fff;
   border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 6px rgba(237, 28, 36, 0.2);
 }
 
 .system-bubble {
-  background: #1a1a3e;
-  color: #d0d0e0;
-  border: 1px solid #2a2a4a;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   border-bottom-left-radius: 4px;
 }
 
 .scenario-bubble {
-  background: linear-gradient(135deg, #1a2a4e, #2a1a5e);
-  color: #a0b0ff;
-  border: 1px solid #3a3a7e;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
   border-bottom-left-radius: 4px;
   font-weight: 600;
 }
 
 .scenario-end-bubble {
-  background: linear-gradient(135deg, #1a3a2e, #1a2a1e);
-  color: #7ee0a0;
-  border: 1px solid #2a5a3e;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
   border-bottom-left-radius: 4px;
 }
 
 .ai-bubble {
-  background: linear-gradient(135deg, #1a1a3e, #2a1a4e);
-  color: #c0c0f0;
-  border: 1px solid #4a3a8a;
+  background: #f5f3ff;
+  color: #3b3466;
+  border: 1px solid #e0d8f0;
   border-bottom-left-radius: 4px;
   white-space: pre-wrap;
 }
 
 .error-bubble {
-  background: linear-gradient(135deg, #3a1a1e, #2a1a1e);
-  color: #ff8080;
-  border: 1px solid #5a2a2a;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
   border-bottom-left-radius: 4px;
 }
 
 /* Script Result Card */
 .script-result-card {
-  background: #0a1a0e;
-  border: 1px solid #1a3a1e;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   border-radius: 12px;
   padding: 14px 18px;
   min-width: 250px;
 }
 
 .result-label {
-  color: #7ee0a0;
+  color: #166534;
   font-size: 0.82rem;
   margin-bottom: 10px;
   font-weight: 600;
@@ -191,7 +194,7 @@
 
 .result-table td {
   padding: 6px 0;
-  border-bottom: 1px solid #1a2a1e;
+  border-bottom: 1px solid #dcfce7;
   font-size: 0.85rem;
 }
 
@@ -200,19 +203,19 @@
 }
 
 .result-key {
-  color: #6a9a7a;
+  color: #15803d;
   text-transform: capitalize;
   padding-right: 16px;
   white-space: nowrap;
 }
 
 .result-value {
-  color: #c0f0d0;
+  color: #14532d;
   font-family: 'Fira Code', monospace;
 }
 
 .result-text {
-  color: #c0f0d0;
+  color: #14532d;
   font-family: 'Fira Code', monospace;
   font-size: 0.82rem;
   margin: 0;
@@ -229,9 +232,9 @@
 .quick-reply-btn {
   padding: 8px 20px;
   border-radius: 20px;
-  border: 2px solid #6c63ff;
+  border: 2px solid var(--accent);
   background: transparent;
-  color: #6c63ff;
+  color: var(--accent);
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -239,12 +242,12 @@
 }
 
 .quick-reply-btn:hover:not(:disabled) {
-  background: #6c63ff;
+  background: var(--accent);
   color: #fff;
 }
 
 .quick-reply-btn.selected {
-  background: #6c63ff;
+  background: var(--accent);
   color: #fff;
 }
 
@@ -258,8 +261,8 @@
   display: flex;
   gap: 5px;
   padding: 12px 18px;
-  background: #1a1a3e;
-  border: 1px solid #2a2a4a;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 16px;
   border-bottom-left-radius: 4px;
   align-self: flex-start;
@@ -270,7 +273,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #6c63ff;
+  background: var(--accent);
   animation: typing-bounce 1.4s infinite ease-in-out;
 }
 
@@ -287,32 +290,33 @@
   display: flex;
   gap: 10px;
   padding: 14px 20px;
-  border-top: 1px solid #2a2a4a;
-  background: #1a1a3e;
+  border-top: 1px solid var(--border);
+  background: var(--bg-panel);
 }
 
 .chat-input input {
   flex: 1;
-  background: #0d0d20;
-  border: 1px solid #2a2a4a;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   border-radius: 22px;
   padding: 12px 20px;
-  color: #e0e0e0;
+  color: var(--text-primary);
   font-size: 0.9rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .chat-input input:focus {
-  border-color: #6c63ff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
 }
 
 .chat-input input::placeholder {
-  color: #4a4a6a;
+  color: var(--text-dim);
 }
 
 .chat-input button {
-  background: #6c63ff;
+  background: var(--accent);
   border: none;
   border-radius: 50%;
   width: 44px;
@@ -327,7 +331,7 @@
 }
 
 .chat-input button:hover:not(:disabled) {
-  background: #5a52e0;
+  background: var(--accent-hover);
 }
 
 .chat-input button:disabled {

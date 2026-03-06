@@ -5,10 +5,39 @@
 }
 
 :root {
+  /* SolarEdge-inspired light theme */
+  --accent: #ED1C24;
+  --accent-hover: #c8151c;
+  --accent-soft: rgba(237, 28, 36, 0.10);
+  --accent-softer: rgba(237, 28, 36, 0.04);
+
+  /* Light surfaces */
+  --bg-deep: #f0f2f5;
+  --bg-panel: #ffffff;
+  --bg-card: #ffffff;
+  --bg-elevated: #f8f9fb;
+  --border: #e0e3e8;
+  --border-light: #d0d4da;
+
+  /* Text */
+  --text-primary: #1a1a2e;
+  --text-secondary: #555568;
+  --text-muted: #7a7a90;
+  --text-dim: #a0a0b4;
+
+  /* Status */
+  --success: #22c55e;
+  --danger: #ef4444;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10);
+
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
-  color: #e0e0e0;
-  background-color: #0a0a1a;
+  color: var(--text-primary);
+  background-color: var(--bg-deep);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

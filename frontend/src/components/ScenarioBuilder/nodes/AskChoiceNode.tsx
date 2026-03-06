@@ -16,11 +16,11 @@ export function AskChoiceNode({ id, data, selected }: NodeProps<Node<FlowNodeDat
   return (
     <div className={`flow-node flow-node-ask-choice${selected ? ' flow-node-selected' : ''}`}>
       <Handle type="target" position={Position.Top} id="in" />
-      <div className="node-type-badge" style={{ color: '#e67e22' }}>Ask Choice</div>
+      <div className="node-type-badge" style={{ color: '#b34700' }}>{'\u2630'} Ask Choice</div>
       <div className="node-label">{(data.question as string) || 'No question set'}</div>
 
       {options.length === 0 && (
-        <div className="node-detail" style={{ color: '#6a6a9a', fontSize: '0.75rem' }}>
+        <div className="node-detail" style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
           Add options in config panel →
         </div>
       )}

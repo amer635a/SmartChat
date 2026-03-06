@@ -41,6 +41,8 @@ function InnerCanvas({
 }: Props) {
   const { fitView } = useReactFlow();
   const prevIds = useRef<string | null>(null);
+  const edgesRef = useRef(edges);
+  edgesRef.current = edges;
 
   useEffect(() => {
     const ids = nodes.map(n => n.id).sort().join(',');
@@ -68,12 +70,12 @@ function InnerCanvas({
         source: connection.source,
         target: connection.target,
         type: 'draggable',
-        markerEnd: { type: MarkerType.ArrowClosed, color: '#4a4a8a' },
+        markerEnd: { type: MarkerType.ArrowClosed, color: '#b0b4c0' },
         data: { bendPoints: [] },
       };
-      onEdgesUpdate([...edges, newEdge]);
+      onEdgesUpdate([...edgesRef.current, newEdge]);
     },
-    [edges, onEdgesUpdate]
+    [onEdgesUpdate]
   );
 
   return (
@@ -90,10 +92,12 @@ function InnerCanvas({
       onPaneClick={onPaneClick}
       defaultEdgeOptions={{
         type: 'draggable',
-        markerEnd: { type: MarkerType.ArrowClosed, color: '#4a4a8a' },
+        markerEnd: { type: MarkerType.ArrowClosed, color: '#b0b4c0' },
         data: { bendPoints: [] },
       }}
       connectionLineType={ConnectionLineType.SmoothStep}
+      connectionRadius={30}
+      connectOnClick
       fitView
       fitViewOptions={{ padding: 0.4, minZoom: 0.6, maxZoom: 1.8 }}
       minZoom={0.3}
@@ -101,12 +105,12 @@ function InnerCanvas({
       deleteKeyCode="Delete"
       proOptions={{ hideAttribution: true }}
     >
-      <Background variant={BackgroundVariant.Dots} color="#2a2a4a" gap={20} size={1.5} />
+      <Background variant={BackgroundVariant.Dots} color="#d0d4da" gap={20} size={1.5} />
       <Controls />
       <MiniMap
         nodeColor={(node) => {
           const colors: Record<string, string> = {
-            start: '#6c63ff',
+            start: '#ED1C24',
             run_script: '#3498db',
             ask_choice: '#e67e22',
             ask_input: '#2ecc71',
@@ -114,10 +118,10 @@ function InnerCanvas({
             call_scenario: '#1abc9c',
             end: '#e74c3c',
           };
-          return colors[node.type ?? ''] ?? '#6a6a9a';
+          return colors[node.type ?? ''] ?? '#b0b4c0';
         }}
-        maskColor="rgba(10, 10, 30, 0.8)"
-        style={{ background: '#0d0d20', border: '1px solid #2a2a4a' }}
+        maskColor="rgba(245, 246, 250, 0.85)"
+        style={{ background: '#ffffff', border: '1px solid #e0e3e8', borderRadius: '8px' }}
       />
     </ReactFlow>
   );

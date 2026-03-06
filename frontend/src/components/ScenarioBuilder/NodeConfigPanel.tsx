@@ -17,7 +17,7 @@ export function NodeConfigPanel({ node, scripts, scenarios, onUpdateNode, onDele
       <div className="node-config-panel node-config-empty">
         <div>
           <p>Click a node to configure it</p>
-          <p style={{ fontSize: '0.75rem', marginTop: 8, color: '#4a4a6a' }}>
+          <p style={{ fontSize: '0.75rem', marginTop: 8, color: 'var(--text-dim)' }}>
             Drag from a handle to connect nodes
           </p>
         </div>
@@ -78,20 +78,6 @@ export function NodeConfigPanel({ node, scripts, scenarios, onUpdateNode, onDele
         <CallScenarioConfig data={d} scenarios={scenarios} onChange={update} />
       )}
 
-      {d.nodeType !== 'start' && d.nodeType !== 'goto' && d.nodeType !== 'call_scenario' && (
-        <div className="config-field" style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #2a2a4a' }}>
-          <label>Label (for Go To target)</label>
-          <input
-            className="builder-input"
-            value={d.label ?? ''}
-            onChange={e => update({ label: e.target.value || undefined })}
-            placeholder="e.g. ask_again"
-          />
-          <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
-            Set a label so a Go To node can jump back here.
-          </p>
-        </div>
-      )}
     </div>
   );
 }
@@ -177,8 +163,8 @@ function RunScriptConfig({
             />
             <button className="btn-browse" onClick={() => setShowBrowser(true)}>Browse</button>
           </div>
-          <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
-            Use <code style={{ background: '#1a1a3e', padding: '1px 4px', borderRadius: 3 }}>{'${key}'}</code> for arg substitution
+          <p style={{ color: 'var(--text-dim)', fontSize: '0.75rem', margin: '4px 0 0' }}>
+            Use <code style={{ background: 'var(--bg-elevated)', padding: '1px 4px', borderRadius: 3 }}>{'${key}'}</code> for arg substitution
           </p>
         </div>
       )}
@@ -276,7 +262,7 @@ function AskChoiceConfig({
       </div>
       <div className="config-field">
         <label>Options</label>
-        <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '0 0 8px' }}>
+        <p style={{ color: 'var(--text-dim)', fontSize: '0.75rem', margin: '0 0 8px' }}>
           Each option creates an output handle. Connect it to the next node.
         </p>
         {options.map((opt, i) => (
@@ -322,8 +308,8 @@ function AskInputConfig({
           onChange={e => onChange({ input_key: e.target.value || undefined })}
           placeholder="e.g., user_email"
         />
-        <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
-          Use as <code style={{ background: '#1a1a3e', padding: '1px 4px', borderRadius: 3 }}>$input.user_email</code> in script args
+        <p style={{ color: 'var(--text-dim)', fontSize: '0.75rem', margin: '4px 0 0' }}>
+          Use as <code style={{ background: 'var(--bg-elevated)', padding: '1px 4px', borderRadius: 3 }}>$input.user_email</code> in script args
         </p>
       </div>
       <div className="config-field">
@@ -385,7 +371,7 @@ function CallScenarioConfig({
           <option key={s.id} value={s.id}>{s.name}</option>
         ))}
       </select>
-      <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
+      <p style={{ color: 'var(--text-dim)', fontSize: '0.75rem', margin: '4px 0 0' }}>
         When reached, execution transfers to the selected scenario.
       </p>
     </div>
@@ -409,7 +395,7 @@ function GotoConfig({
           onChange={e => onChange({ target: e.target.value || undefined })}
           placeholder="e.g. ask_again"
         />
-        <p style={{ color: '#4a4a6a', fontSize: '0.75rem', margin: '4px 0 0' }}>
+        <p style={{ color: 'var(--text-dim)', fontSize: '0.75rem', margin: '4px 0 0' }}>
           Enter the label of the node to jump to. Or connect the Go To output to the target node directly.
         </p>
       </div>

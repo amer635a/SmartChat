@@ -74,7 +74,7 @@ export function TrainingPhraseEditor({ phrases, onChange }: Props) {
     <div className="form-section">
       <h3 className="section-title">Training Phrases</h3>
       <div className="phrases-toolbar">
-        <p style={{ color: '#4a4a6a', fontSize: '0.8rem', margin: 0 }}>
+        <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem', margin: 0 }}>
           {nonEmpty.length.toLocaleString()} phrase{nonEmpty.length !== 1 ? 's' : ''} loaded
         </p>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -89,7 +89,7 @@ export function TrainingPhraseEditor({ phrases, onChange }: Props) {
             &#x1F4C2; Upload JSON
           </button>
           {isBulk && (
-            <button className="btn-upload-json" style={{ borderColor: '#ff4757', color: '#ff4757' }} onClick={clearAll}>
+            <button className="btn-upload-json" style={{ borderColor: 'var(--danger)', color: 'var(--danger)' }} onClick={clearAll}>
               &#x2715; Clear
             </button>
           )}
