@@ -25,8 +25,6 @@ class IntentTrainer:
         labels = list(labels)
 
         unique_labels = set(labels)
-        if len(unique_labels) < 2:
-            return {"error": "Need at least 2 different scenarios to train"}
 
         # Encode all phrases to embeddings
         embeddings = self.embedder.encode(phrases)
@@ -35,17 +33,6 @@ class IntentTrainer:
         label_encoder = LabelEncoder()
         encoded_labels = label_encoder.fit_transform(labels)
 
-        # Train MLPClassifier
-        clf = MLPClassifier(
-            hidden_layer_sizes=(256, 128, 64),
-            activation="relu",
-            max_iter=500,
-            early_stopping=True,
-            validation_fraction=0.15,
-            random_state=42,
-        )
-        clf.fit(embeddings, encoded_labels)
-
         # Compute per-class centroids for OOD detection
         centroids = {}
         for label in unique_labels:
@@ -53,9 +40,30 @@ class IntentTrainer:
             centroids[label] = embeddings[mask].mean(axis=0)
         centroids_array = np.array([centroids[l] for l in label_encoder.classes_])
 
+        if len(unique_labels) >= 2:
+            # Train MLPClassifier when we have multiple scenarios
+            clf = MLPClassifier(
+                hidden_layer_sizes=(256, 128, 64),
+                activation="relu",
+                max_iter=500,
+                early_stopping=True,
+                validation_fraction=0.15,
+                random_state=42,
+            )
+            clf.fit(embeddings, encoded_labels)
+        else:
+            # Single scenario — no MLP needed, centroid matching will be used
+            clf = None
+
         # Save model artifacts
         self.model_dir.mkdir(parents=True, exist_ok=True)
-        joblib.dump(clf, self.model_dir / "intent_classifier.joblib")
+        if clf is not None:
+            joblib.dump(clf, self.model_dir / "intent_classifier.joblib")
+        else:
+            # Remove stale MLP model if it exists
+            mlp_path = self.model_dir / "intent_classifier.joblib"
+            if mlp_path.exists():
+                mlp_path.unlink()
         joblib.dump(label_encoder, self.model_dir / "label_encoder.joblib")
         np.save(self.model_dir / "centroids.npy", centroids_array)
 

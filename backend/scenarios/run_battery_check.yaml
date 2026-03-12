@@ -1,0 +1,31 @@
+id: run_battery_check
+name: Run Battery Connection Check
+description: Collect battery IP and port, SSH into the device to ping the battery,
+  then hand off to connection check.
+training_phrases:
+- run battery check
+- check battery connection
+- battery connection check
+steps:
+- action: ask_input
+  question: What is the battery IP address?
+  input_key: battery_ip
+- action: ask_input
+  question: What is the battery port?
+  input_key: battery_port
+- action: run_script_branch
+  script: balena_ssh_ping.sh
+  args:
+    uuid: $input.balena_uuid
+    ip: $input.battery_ip
+  display_message: Connecting to device and pinging battery...
+  branch_field: success
+  branches:
+    success:
+    - action: call_scenario
+      target_scenario: check_device_connections
+    fail:
+    - action: end
+      message: "Cannot reach the battery from the device. Please check:\n  1. Battery\
+        \ is powered on\n  2. Network cable is properly connected\n  3. IP address\
+        \ is correct\nIf the issue persists, consult with an engineer."

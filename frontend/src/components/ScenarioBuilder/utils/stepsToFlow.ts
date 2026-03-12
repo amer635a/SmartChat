@@ -37,6 +37,21 @@ function convertChain(
           display_message: step.display_message,
         },
       });
+    } else if (step.action === 'run_script_branch') {
+      nodes.push({
+        id: nodeId,
+        type: 'run_script_branch',
+        position: { x: 0, y: 0 },
+        data: {
+          nodeType: 'run_script_branch',
+          label: step.label,
+          script: step.script,
+          command: step.command,
+          args: step.args,
+          display_message: step.display_message,
+          branch_field: step.branch_field,
+        },
+      });
     } else if (step.action === 'ask_choice') {
       nodes.push({
         id: nodeId,
@@ -107,8 +122,18 @@ function convertChain(
       targetHandle: 'in',
     });
 
-    // goto, end, and call_scenario are terminal — stop the linear chain
-    if (step.action === 'goto' || step.action === 'end' || step.action === 'call_scenario') {
+    // goto and end are terminal — stop the linear chain
+    if (step.action === 'goto' || step.action === 'end') {
+      return;
+    }
+
+    if (step.action === 'run_script_branch' && step.branches) {
+      for (const branchKey of ['success', 'fail']) {
+        const branchSteps = step.branches[branchKey];
+        if (branchSteps && branchSteps.length > 0) {
+          convertChain(branchSteps, nodes, edges, gotoRefs, nodeId, `out-${branchKey}`, `${nodeId}-${branchKey}`);
+        }
+      }
       return;
     }
 

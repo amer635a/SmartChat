@@ -6,6 +6,7 @@ interface UseWebSocketReturn {
   sendMessage: (msg: WSClientMessage) => void;
   messageQueue: WSServerMessage[];
   isConnected: boolean;
+  resetQueue: () => void;
 }
 
 export function useWebSocket(sessionId: string): UseWebSocketReturn {
@@ -60,5 +61,9 @@ export function useWebSocket(sessionId: string): UseWebSocketReturn {
     }
   }, []);
 
-  return { sendMessage, messageQueue, isConnected };
+  const resetQueue = useCallback(() => {
+    setMessageQueue([]);
+  }, []);
+
+  return { sendMessage, messageQueue, isConnected, resetQueue };
 }

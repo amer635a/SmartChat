@@ -1,0 +1,25 @@
+id: collect_balena_info
+name: Collect Balena Info
+description: Authenticate with Balena using an auth token and collect the device UUID.
+training_phrases:
+- collect balena info
+- balena device info
+- check balena device
+steps:
+- action: ask_input
+  question: Please provide your Balena authentication token.
+  input_key: balena_token
+- action: run_script_branch
+  script: balena_login.sh
+  args:
+    token: $input.balena_token
+  display_message: Logging in to Balena...
+  branch_field: success
+  branches:
+    success:
+    - action: ask_input
+      question: What is the Balena UUID of the device?
+      input_key: balena_uuid
+    fail:
+    - action: end
+      message: Balena authentication failed. Please check your token and try again.

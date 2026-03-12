@@ -1,0 +1,22 @@
+version: "3"
+
+tasks:
+  backend:
+    desc: Run the FastAPI backend on port 8000
+    dir: backend
+    cmds:
+      - ./venv/bin/uvicorn app.main:app --reload --port 8000
+
+  frontend:
+    desc: Run the Vite frontend dev server on port 5173
+    dir: frontend
+    env:
+      PATH: /home/amer/.nvm/versions/node/v24.14.0/bin:{{.PATH}}
+    cmds:
+      - npm run dev
+
+  all:
+    desc: Run both frontend and backend
+    deps:
+      - backend
+      - frontend

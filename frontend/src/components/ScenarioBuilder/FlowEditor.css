@@ -284,6 +284,18 @@
   background: linear-gradient(135deg, #eff8ff, #ffffff);
 }
 
+.flow-node-run-script-branch {
+  border-left-color: #b8860b;
+  background: linear-gradient(135deg, #fff8e6, #ffffff);
+}
+.flow-node-run-script-branch .branch-label-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 8px 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
 .flow-node-ask-choice {
   border-left-color: #e67e22;
   background: linear-gradient(135deg, #fff8f0, #ffffff);

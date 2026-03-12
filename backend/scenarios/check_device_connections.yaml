@@ -1,0 +1,46 @@
+id: check_device_connections
+name: Check Device Connections
+description: SSH into the device, list device driver connections, and check if the
+  serial number exists.
+training_phrases:
+- check device connections
+- list device connections
+- check serial number
+steps:
+- action: run_script_branch
+  script: balena_check_connections.sh
+  args:
+    uuid: $input.balena_uuid
+    ip: $input.battery_ip
+    port: $input.battery_port
+  display_message: Checking device driver connections...
+  branch_field: connection_found
+  branches:
+    success:
+    - action: ask_choice
+      question: Can you see the device on the local UI?
+      options:
+      - label: 'Yes'
+        value: 'yes'
+      - label: 'No'
+        value: 'no'
+      branches:
+        'yes':
+        - action: end
+          message: "We don't see a problem here \u2014 the connection is established\
+            \ and working correctly.\nIf there is a missing device, please save this\
+            \ chat and send it to an engineer to investigate further."
+        'no':
+        - action: end
+          message: "It looks like the serial number of the device has been changed.\
+            \ This is unaccepted behavior \u2014 we expect the serial number to remain\
+            \ the same.\n\nTo solve this:\n  \u2022 If the installer is at site, request\
+            \ to recommission the system with the correct details.\n  \u2022 If the\
+            \ serial number was changed on purpose, currently we don't have a solution\
+            \ for this. Please open a bug and send it to an engineer with the chat\
+            \ details."
+    fail:
+    - action: end
+      message: No matching connection found for this IP and port. The battery connection
+        does not exist yet or the serial numbers may have been changed. Please take
+        the details from above and consult with an engineer.

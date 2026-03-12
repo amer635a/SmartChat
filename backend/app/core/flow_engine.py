@@ -2,7 +2,7 @@ from app.core.scenario_registry import ScenarioRegistry
 from app.core.script_executor import ScriptExecutor
 from app.nlp.intent_classifier import IntentClassifier
 from app.nlp.llm_fallback import LLMFallback
-from app.models.session import ChatSession, SessionState
+from app.models.session import BranchFrame, CallFrame, ChatSession, SessionState
 from app.models.messages import ResponseMessage
 from app.models.scenario import Step
 
@@ -47,8 +47,7 @@ class FlowEngine:
             # Start scenario
             session.active_scenario_id = intent_id
             session.current_step_index = 0
-            session.current_branch_key = None
-            session.current_branch_step_index = 0
+            session.branch_path.clear()
             session.collected_inputs.clear()
 
             responses.append(ResponseMessage(
@@ -68,28 +67,44 @@ class FlowEngine:
 
         return responses
 
+    def _get_current_step(self, session: ChatSession) -> tuple[list[Step] | None, int]:
+        """Walk the branch_path to find the current step list and index."""
+        scenario = self.registry.get(session.active_scenario_id)
+        if not scenario:
+            return None, 0
+
+        steps = scenario.steps
+        step_index = session.current_step_index
+
+        for frame in session.branch_path:
+            if step_index >= len(steps):
+                return None, 0
+            parent_step = steps[step_index]
+            if not parent_step.branches or frame.branch_key not in parent_step.branches:
+                return None, 0
+            steps = parent_step.branches[frame.branch_key]
+            step_index = frame.step_index
+
+        return steps, step_index
+
     async def _execute_current_step(self, session: ChatSession) -> list[ResponseMessage]:
         scenario = self.registry.get(session.active_scenario_id)
         if not scenario:
             session.reset()
             return [ResponseMessage(type="error", content="Scenario not found.")]
 
-        # Determine which step list we're in (main or branch)
-        if session.current_branch_key is not None:
-            # We're in a branch
-            parent_step = scenario.steps[session.current_step_index]
-            if parent_step.branches and session.current_branch_key in parent_step.branches:
-                steps = parent_step.branches[session.current_branch_key]
-                step_index = session.current_branch_step_index
-            else:
-                session.reset()
-                return [ResponseMessage(type="error", content="Branch not found.")]
-        else:
-            steps = scenario.steps
-            step_index = session.current_step_index
+        steps, step_index = self._get_current_step(session)
+        if steps is None:
+            session.reset()
+            return [ResponseMessage(type="error", content="Branch not found.")]
 
         if step_index >= len(steps):
-            return self._end_scenario(session)
+            # Branch ran out of steps — pop up one level
+            if session.branch_path:
+                session.branch_path.pop()
+                self._advance_step(session)
+                return await self._execute_current_step(session)
+            return await self._end_scenario(session)
 
         step = steps[step_index]
         return await self._process_step(session, step)
@@ -113,6 +128,41 @@ class FlowEngine:
             self._advance_step(session)
             next_responses = await self._execute_current_step(session)
             responses.extend(next_responses)
+
+        elif step.action == "run_script_branch":
+            # Run a script and auto-branch based on a JSON field in the result
+            session.state = SessionState.EXECUTING
+            resolved_args = self._resolve_args(step.args, session)
+            result = await self.executor.run(script_name=step.script, command=step.command, args=resolved_args)
+
+            responses.append(ResponseMessage(
+                type="script_result",
+                content=result,
+                display_message=step.display_message or "Result:"
+            ))
+            session.state = SessionState.IDLE
+
+            # Parse the script result to determine which branch to take
+            branch_key = "fail"
+            field = step.branch_field or "success"
+            try:
+                import json
+                parsed = json.loads(result) if isinstance(result, str) else result
+                if parsed.get(field):
+                    branch_key = "success"
+            except (json.JSONDecodeError, TypeError, AttributeError):
+                pass
+
+            # Enter the branch
+            if step.branches and branch_key in step.branches:
+                session.branch_path.append(BranchFrame(branch_key=branch_key, step_index=0))
+                next_responses = await self._execute_current_step(session)
+                responses.extend(next_responses)
+            else:
+                # No matching branch — advance to next step
+                self._advance_step(session)
+                next_responses = await self._execute_current_step(session)
+                responses.extend(next_responses)
 
         elif step.action == "ask_choice":
             options = [{"label": o.label, "value": o.value} for o in (step.options or [])]
@@ -138,8 +188,7 @@ class FlowEngine:
                 for idx, s in enumerate(scenario.steps):
                     if s.label == step.target:
                         session.current_step_index = idx
-                        session.current_branch_key = None
-                        session.current_branch_step_index = 0
+                        session.branch_path.clear()
                         session.state = SessionState.IDLE
                         return await self._execute_current_step(session)
             # Target not found — end scenario
@@ -158,10 +207,17 @@ class FlowEngine:
                 content=f"Switching to: {target.name}"
             ))
 
+            # Save current position so we can return after the called scenario ends
+            self._advance_step(session)
+            session.call_stack.append(CallFrame(
+                scenario_id=session.active_scenario_id,
+                step_index=session.current_step_index,
+                branch_path=[BranchFrame(**f.model_dump()) for f in session.branch_path],
+            ))
+
             session.active_scenario_id = target_id
             session.current_step_index = 0
-            session.current_branch_key = None
-            session.current_branch_step_index = 0
+            session.branch_path.clear()
             session.state = SessionState.IDLE
 
             step_responses = await self._execute_current_step(session)
@@ -181,12 +237,12 @@ class FlowEngine:
             return [ResponseMessage(type="error", content="Scenario not found.")]
 
         # Find the current ask_choice step
-        if session.current_branch_key is not None:
-            parent_step = scenario.steps[session.current_step_index]
-            steps = parent_step.branches[session.current_branch_key]
-            step = steps[session.current_branch_step_index]
-        else:
-            step = scenario.steps[session.current_step_index]
+        steps, step_index = self._get_current_step(session)
+        if steps is None or step_index >= len(steps):
+            session.reset()
+            return [ResponseMessage(type="error", content="Unexpected state.")]
+
+        step = steps[step_index]
 
         if step.action != "ask_choice" or not step.branches:
             session.reset()
@@ -213,16 +269,8 @@ class FlowEngine:
                 content="Please select one of the available options."
             )]
 
-        # Enter the branch
-        if session.current_branch_key is None:
-            # Entering branch from main steps
-            session.current_branch_key = matched_branch
-            session.current_branch_step_index = 0
-        else:
-            # Already in a branch - for simplicity, handle the sub-branch inline
-            session.current_branch_key = matched_branch
-            session.current_branch_step_index = 0
-
+        # Enter the branch — push onto branch_path
+        session.branch_path.append(BranchFrame(branch_key=matched_branch, step_index=0))
         session.state = SessionState.IDLE
         return await self._execute_current_step(session)
 
@@ -233,12 +281,12 @@ class FlowEngine:
             return [ResponseMessage(type="error", content="Scenario not found.")]
 
         # Find the current ask_input step
-        if session.current_branch_key is not None:
-            parent_step = scenario.steps[session.current_step_index]
-            steps = parent_step.branches[session.current_branch_key]
-            step = steps[session.current_branch_step_index]
-        else:
-            step = scenario.steps[session.current_step_index]
+        steps, step_index = self._get_current_step(session)
+        if steps is None or step_index >= len(steps):
+            session.reset()
+            return [ResponseMessage(type="error", content="Unexpected state.")]
+
+        step = steps[step_index]
 
         if step.action != "ask_input":
             session.reset()
@@ -254,12 +302,22 @@ class FlowEngine:
         return await self._execute_current_step(session)
 
     def _advance_step(self, session: ChatSession):
-        if session.current_branch_key is not None:
-            session.current_branch_step_index += 1
+        """Advance the step counter at the current nesting level."""
+        if session.branch_path:
+            session.branch_path[-1].step_index += 1
         else:
             session.current_step_index += 1
 
-    def _end_scenario(self, session: ChatSession) -> list[ResponseMessage]:
+    async def _end_scenario(self, session: ChatSession) -> list[ResponseMessage]:
+        # If there's a caller on the stack, return to it
+        if session.call_stack:
+            frame = session.call_stack.pop()
+            session.active_scenario_id = frame.scenario_id
+            session.current_step_index = frame.step_index
+            session.branch_path = [BranchFrame(**f.model_dump()) for f in frame.branch_path]
+            session.state = SessionState.IDLE
+            return await self._execute_current_step(session)
+
         session.reset()
         return [ResponseMessage(
             type="scenario_end",

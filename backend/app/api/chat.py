@@ -26,6 +26,15 @@ async def chat_endpoint(websocket: WebSocket, session_id: str):
             # Normalize incoming message to user_text
             msg_type = data.get("type", "user_message")
 
+            if msg_type == "reset":
+                session.reset()
+                await websocket.send_json({"type": "typing", "content": "false"})
+                await websocket.send_json({
+                    "type": "text",
+                    "content": "Welcome to SmartChat! How can I help you today?"
+                })
+                continue
+
             if msg_type == "user_message":
                 user_text = data.get("content", "")
             elif msg_type == "choice_response":

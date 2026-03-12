@@ -27,12 +27,17 @@ class ScriptExecutor:
         if not script_path.exists():
             return f"Error: Script not found: {script_name}"
 
-        if script_path.suffix != ".py":
-            return "Error: Only .py scripts are allowed."
+        if script_path.suffix not in (".py", ".sh"):
+            return "Error: Only .py and .sh scripts are allowed."
 
-        cmd = [sys.executable, str(script_path)]
-        if args:
-            cmd.extend(["--args", json.dumps(args)])
+        if script_path.suffix == ".sh":
+            cmd = ["bash", str(script_path)]
+            if args:
+                cmd.append(json.dumps(args))
+        else:
+            cmd = [sys.executable, str(script_path)]
+            if args:
+                cmd.extend(["--args", json.dumps(args)])
 
         try:
             result = subprocess.run(

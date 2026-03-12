@@ -9,7 +9,7 @@ export interface ChoiceOption {
   value: string;
 }
 
-export type StepAction = 'run_script' | 'ask_choice' | 'ask_input' | 'end' | 'goto' | 'call_scenario';
+export type StepAction = 'run_script' | 'run_script_branch' | 'ask_choice' | 'ask_input' | 'end' | 'goto' | 'call_scenario';
 
 export interface Step {
   action: StepAction;
@@ -18,6 +18,7 @@ export interface Step {
   command?: string;
   args?: Record<string, string>;
   display_message?: string;
+  branch_field?: string;
   question?: string;
   options?: ChoiceOption[];
   branches?: Record<string, Step[]>;

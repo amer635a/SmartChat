@@ -16,8 +16,9 @@ async def list_scenarios():
 @router.get("/scripts")
 async def list_scripts():
     scripts = []
-    for script_file in sorted(SCRIPTS_DIR.glob("*.py")):
-        scripts.append({"name": script_file.name})
+    for ext in ("*.py", "*.sh"):
+        for script_file in sorted(SCRIPTS_DIR.glob(ext)):
+            scripts.append({"name": script_file.name})
     return scripts
 
 

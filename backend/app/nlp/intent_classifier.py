@@ -20,16 +20,20 @@ class IntentClassifier:
         clf_path = self.model_dir / "intent_classifier.joblib"
         le_path = self.model_dir / "label_encoder.joblib"
         centroids_path = self.model_dir / "centroids.npy"
-        if clf_path.exists() and le_path.exists():
-            self.clf = joblib.load(clf_path)
+        if le_path.exists():
             self.label_encoder = joblib.load(le_path)
+            if clf_path.exists():
+                self.clf = joblib.load(clf_path)
+            else:
+                self.clf = None  # single-scenario mode
             if centroids_path.exists():
                 self.centroids = np.load(centroids_path)
+            self._loaded = True
             return True
         return False
 
     def is_loaded(self) -> bool:
-        return self.clf is not None
+        return getattr(self, '_loaded', False) and self.label_encoder is not None
 
     def predict(self, text: str) -> tuple[str | None, float]:
         """Returns (scenario_id, confidence). Returns (None, 0.0) if below threshold."""
@@ -46,6 +50,15 @@ class IntentClassifier:
             max_similarity = float(similarities.max())
             if max_similarity < self.similarity_threshold:
                 return None, max_similarity
+
+            # Single-scenario mode: use centroid similarity directly
+            if self.clf is None:
+                best_idx = int(similarities.argmax())
+                scenario_id = self.label_encoder.inverse_transform([best_idx])[0]
+                return scenario_id, max_similarity
+
+        if self.clf is None:
+            return None, 0.0
 
         probabilities = self.clf.predict_proba(embedding)[0]
         max_idx = probabilities.argmax()

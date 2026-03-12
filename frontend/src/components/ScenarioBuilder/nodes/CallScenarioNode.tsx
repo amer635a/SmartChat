@@ -10,6 +10,7 @@ export function CallScenarioNode({ data, selected }: NodeProps<Node<FlowNodeData
       <div className="node-label">
         {(data.target_scenario as string) ? `→ ${data.target_scenario}` : 'No scenario set'}
       </div>
+      <Handle type="source" position={Position.Bottom} id="out" />
     </div>
   );
 }

@@ -34,6 +34,7 @@ export function NodeConfigPanel({ node, scripts, scenarios, onUpdateNode, onDele
   const nodeTitles: Record<string, string> = {
     start: 'Entry Point',
     run_script: 'Run Script',
+    run_script_branch: 'Run Script & Branch',
     ask_choice: 'Ask Choice',
     ask_input: 'Ask Input',
     end: 'End',
@@ -56,6 +57,10 @@ export function NodeConfigPanel({ node, scripts, scenarios, onUpdateNode, onDele
 
       {d.nodeType === 'run_script' && (
         <RunScriptConfig data={d} scripts={scripts} onChange={update} />
+      )}
+
+      {d.nodeType === 'run_script_branch' && (
+        <RunScriptBranchConfig data={d} scripts={scripts} onChange={update} />
       )}
 
       {d.nodeType === 'ask_choice' && (
@@ -217,6 +222,100 @@ function RunScriptConfig({
           onClose={() => setShowBrowser(false)}
         />
       )}
+    </>
+  );
+}
+
+function RunScriptBranchConfig({
+  data,
+  scripts,
+  onChange,
+}: {
+  data: FlowNodeData;
+  scripts: ScriptInfo[];
+  onChange: (p: Partial<FlowNodeData>) => void;
+}) {
+  const args = data.args ?? {};
+  const argEntries = Object.entries(args);
+
+  const updateArg = (index: number, newKey: string, newValue: string) => {
+    const entries = [...argEntries];
+    entries[index] = [newKey, newValue];
+    const newArgs: Record<string, string> = {};
+    for (const [k, v] of entries) newArgs[k] = v;
+    onChange({ args: Object.keys(newArgs).length ? newArgs : undefined });
+  };
+
+  const removeArg = (index: number) => {
+    const entries = [...argEntries];
+    entries.splice(index, 1);
+    const newArgs: Record<string, string> = {};
+    for (const [k, v] of entries) newArgs[k] = v;
+    onChange({ args: Object.keys(newArgs).length ? newArgs : undefined });
+  };
+
+  return (
+    <>
+      <div className="config-field">
+        <label>Script</label>
+        <select
+          className="builder-select"
+          value={data.script ?? ''}
+          onChange={e => onChange({ script: e.target.value || undefined })}
+        >
+          <option value="">-- Select script --</option>
+          {scripts.map(s => (
+            <option key={s.name} value={s.name}>{s.name}</option>
+          ))}
+        </select>
+      </div>
+      <div className="config-field">
+        <label>Display Message</label>
+        <input
+          className="builder-input"
+          value={data.display_message ?? ''}
+          onChange={e => onChange({ display_message: e.target.value || undefined })}
+          placeholder="Message before result"
+        />
+      </div>
+      <div className="config-field">
+        <label>Branch Field</label>
+        <input
+          className="builder-input"
+          value={data.branch_field ?? ''}
+          onChange={e => onChange({ branch_field: e.target.value || undefined })}
+          placeholder="e.g. success"
+        />
+        <p style={{ color: 'var(--text-dim)', fontSize: '0.75rem', margin: '4px 0 0' }}>
+          JSON field in script result to check. If truthy → "success" branch, if falsy → "fail" branch.
+        </p>
+      </div>
+      <div className="config-field">
+        <label>Arguments</label>
+        {argEntries.map(([key, value], i) => (
+          <div key={i} className="arg-row">
+            <input
+              className="builder-input arg-key"
+              value={key}
+              onChange={e => updateArg(i, e.target.value, value)}
+              placeholder="key"
+            />
+            <input
+              className="builder-input"
+              value={value}
+              onChange={e => updateArg(i, key, e.target.value)}
+              placeholder="$input.key or value"
+            />
+            <button className="btn-remove" onClick={() => removeArg(i)}>x</button>
+          </div>
+        ))}
+        <button
+          className="btn-add"
+          onClick={() => onChange({ args: { ...args, '': '' } })}
+        >
+          + Add Arg
+        </button>
+      </div>
     </>
   );
 }

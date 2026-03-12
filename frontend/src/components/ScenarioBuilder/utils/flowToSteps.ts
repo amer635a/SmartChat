@@ -45,6 +45,26 @@ export function flowToSteps(nodes: FlowNode[], edges: FlowEdge[]): Step[] {
         });
         currentId = outMap.get(`${currentId}:out`);
 
+      } else if (d.nodeType === 'run_script_branch') {
+        const branches: Record<string, Step[]> = {};
+        for (const branchKey of ['success', 'fail']) {
+          const branchStart = outMap.get(`${currentId}:out-${branchKey}`);
+          if (branchStart) {
+            branches[branchKey] = buildChain(branchStart);
+          }
+        }
+        steps.push({
+          action: 'run_script_branch',
+          label: label || undefined,
+          script: d.script,
+          command: d.command as string | undefined,
+          args: d.args,
+          display_message: d.display_message,
+          branch_field: d.branch_field as string | undefined,
+          branches: Object.keys(branches).length ? branches : undefined,
+        });
+        break; // run_script_branch has branch outputs, no default 'out'
+
       } else if (d.nodeType === 'ask_choice') {
         const options = d.options ?? [];
         const branches: Record<string, Step[]> = {};
@@ -86,7 +106,7 @@ export function flowToSteps(nodes: FlowNode[], edges: FlowEdge[]): Step[] {
           action: 'call_scenario',
           target_scenario: d.target_scenario as string | undefined,
         });
-        break; // call_scenario is terminal
+        currentId = outMap.get(`${currentId}:out`);
 
       } else if (d.nodeType === 'goto') {
         // Resolve goto: find what the 'out' edge points to, then look up that node's label

@@ -9,7 +9,7 @@ class ChoiceOption(BaseModel):
 
 
 class Step(BaseModel):
-    action: Literal["run_script", "ask_choice", "ask_input", "end", "goto", "call_scenario"]
+    action: Literal["run_script", "run_script_branch", "ask_choice", "ask_input", "end", "goto", "call_scenario"]
 
     # Optional label — used as a goto target
     label: str | None = None
@@ -19,6 +19,10 @@ class Step(BaseModel):
     command: str | None = None
     args: dict[str, str] | None = None
     display_message: str | None = None
+
+    # For run_script_branch — JSON field to check for branching (e.g. "success")
+    # Branches on truthy → "success" key, falsy → "fail" key
+    branch_field: str | None = None
 
     # For ask_choice / ask_input
     question: str | None = None

@@ -28,6 +28,7 @@ interface Props {
 
 const DEFAULT_NODE_DATA: Record<string, FlowNodeData> = {
   run_script: { nodeType: 'run_script' },
+  run_script_branch: { nodeType: 'run_script_branch', branch_field: 'success' },
   ask_choice: { nodeType: 'ask_choice', options: [] },
   ask_input: { nodeType: 'ask_input' },
   end: { nodeType: 'end' },
@@ -199,6 +200,7 @@ export function FlowEditor({ scenario, onChange, scripts, scenarios, isNew, onSa
 
   const nodeButtons = [
     { type: 'run_script', label: 'Script', color: '#3498db' },
+    { type: 'run_script_branch', label: 'Script+Branch', color: '#b8860b' },
     { type: 'ask_choice', label: 'Choice', color: '#e67e22' },
     { type: 'ask_input', label: 'Input', color: '#2ecc71' },
     { type: 'goto', label: 'GoTo', color: '#9b59b6' },

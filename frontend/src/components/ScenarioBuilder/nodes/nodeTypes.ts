@@ -2,6 +2,7 @@
 // Defining inside a component causes React Flow to remount all nodes on every render.
 import { StartNode } from './StartNode';
 import { RunScriptNode } from './RunScriptNode';
+import { RunScriptBranchNode } from './RunScriptBranchNode';
 import { AskChoiceNode } from './AskChoiceNode';
 import { AskInputNode } from './AskInputNode';
 import { EndNode } from './EndNode';
@@ -11,6 +12,7 @@ import { CallScenarioNode } from './CallScenarioNode';
 export const nodeTypes = {
   start: StartNode,
   run_script: RunScriptNode,
+  run_script_branch: RunScriptBranchNode,
   ask_choice: AskChoiceNode,
   ask_input: AskInputNode,
   end: EndNode,

@@ -74,10 +74,11 @@ export function useChatSession(messageQueue: WSServerMessage[]) {
     saveMessages(messages);
   }, [messages]);
 
-  const clearMessages = useCallback(() => {
+  const clearMessages = useCallback((onClear?: () => void) => {
     setMessages([]);
     processedCount.current = 0;
     localStorage.removeItem(STORAGE_KEY);
+    onClear?.();
   }, []);
 
   return { messages, isTyping, addUserMessage, clearMessages };

@@ -1,9 +1,9 @@
 {
   "num_scenarios": 3,
-  "num_phrases": 20008,
+  "num_phrases": 152099,
   "labels": [
-    "export_limit",
-    "user_account_status",
-    "what_is_soc_of_battery"
+    "check_battery_connection",
+    "collect_balena_info",
+    "run_battery_check"
   ]
 }
